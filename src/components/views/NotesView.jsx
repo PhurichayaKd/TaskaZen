@@ -179,10 +179,19 @@ const NotesView = ({ store }) => {
     }
   };
 
-  const handleAddPage = (template = 'blank') => {
-    addNote(template);
-    setDirection(1);
-    setCurrentIndex(notes.length);
+  const handleAddPage = async (template = 'blank') => {
+    const newId = await addNote(template);
+    if (newId) {
+      setDirection(1);
+      // Find index of the newly added note
+      const newIndex = notes.findIndex(n => n.id === newId);
+      if (newIndex !== -1) {
+        setCurrentIndex(newIndex);
+      } else {
+        // Fallback if not found yet (though addNote updates state)
+        setCurrentIndex(notes.length);
+      }
+    }
     setShowTemplatePicker(false);
   };
 

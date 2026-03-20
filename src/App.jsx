@@ -14,8 +14,8 @@ import FloatingTimer from './components/overlays/FloatingTimer';
 import CompletionAnimationOverlay from './components/overlays/CompletionAnimationOverlay';
 
 export default function App() {
-  const store = useStore();
   const [session, setSession] = useState(null);
+  const store = useStore(session);
   const [activeTab, setActiveTab] = useState('home');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [viewMode, setViewMode] = useState('custom');
@@ -61,6 +61,20 @@ export default function App() {
 
   if (!session) {
     return <LoginView />;
+  }
+
+  if (store.isLoading) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-zinc-50 gap-4">
+        <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center animate-pulse">
+          <FileText className="w-8 h-8 text-indigo-600" />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <h2 className="text-xl font-bold text-zinc-800 animate-pulse">กำลังเตรียมพื้นที่ทำงานของคุณ...</h2>
+          <p className="text-sm text-zinc-400">Zen Productivity is loading</p>
+        </div>
+      </div>
+    );
   }
 
   return (
