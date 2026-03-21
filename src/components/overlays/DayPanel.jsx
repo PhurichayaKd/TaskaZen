@@ -240,12 +240,25 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
       }
     } catch (error) {
       console.error("AI Generation Error:", error);
-      if (error.message.includes('404')) {
+      let errorMessage = error.message;
+      
+      try {
+        // Try to parse error message if it's a JSON string from API
+        if (errorMessage.includes('{')) {
+          const jsonStr = errorMessage.substring(errorMessage.indexOf('{'));
+          const errorObj = JSON.parse(jsonStr);
+          errorMessage = errorObj.error?.message || errorMessage;
+        }
+      } catch (e) {
+        // Fallback to original message
+      }
+
+      if (errorMessage.includes('404')) {
         setAiMessage('ไม่พบ API Endpoint หรือ Model (404)');
-      } else if (error.message.includes('403') || error.message.includes('401')) {
+      } else if (errorMessage.includes('403') || errorMessage.includes('401')) {
         setAiMessage('API Key ไม่ถูกต้อง หรือไม่มีสิทธิ์เข้าถึง (403/401)');
       } else {
-        setAiMessage('เกิดข้อผิดพลาดในการเชื่อมต่อ AI: ' + error.message);
+        setAiMessage('เกิดข้อผิดพลาด: ' + (errorMessage.length > 50 ? errorMessage.substring(0, 50) + '...' : errorMessage));
       }
     } finally {
       setIsGeneratingTasks(false);
