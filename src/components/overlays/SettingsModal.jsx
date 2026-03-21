@@ -65,7 +65,7 @@ const SettingsModal = ({ isOpen, onClose, store }) => {
             </button>
           </div>
 
-          <div className="p-8 space-y-8">
+          <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
             {/* Name Setting */}
             <div className="space-y-3">
               <label className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] flex items-center gap-2">

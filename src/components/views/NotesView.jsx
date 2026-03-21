@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import Button from '../ui/Button';
 import { fetchWithRetry } from '../../utils/apiUtils';
+import { AI_CONFIG, getAiUrl } from '../../utils/aiConfig';
+import { supabase } from '../../utils/supabaseClient';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -245,19 +247,38 @@ const NotesView = ({ store }) => {
   const handleAiSummarize = async () => {
     const text = editorRef.current?.innerText || "";
     if (!text.trim()) return;
+    
     setIsAnalyzing(true);
     setAiSummary('');
     try {
-      const apiKey = localStorage.getItem('GEMINI_API_KEY') || "YOUR_API_KEY_HERE";
       const prompt = `ช่วยสรุปเนื้อหาในโน้ตนี้ให้สั้น กระชับ และได้ใจความสำคัญ: "${text}"`;
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      const options = {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-      };
-      const data = await fetchWithRetry(url, options);
-      if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        setAiSummary(data.candidates[0].content.parts[0].text);
+      
+      if (AI_CONFIG.USE_BACKEND) {
+        // Option A: Backend Call
+        const { data, error } = await supabase.functions.invoke(AI_CONFIG.FUNCTION_NAME, {
+          body: { prompt }
+        });
+        if (error) throw error;
+        setAiSummary(data.text);
+      } else {
+        // Option B: Direct Call
+        const apiKey = AI_CONFIG.GEMINI_API_KEY || DIRECT_KEY;
+        if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+          setAiSummary('กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ');
+          setTimeout(() => setAiSummary(''), 4000);
+          setIsAnalyzing(false);
+          return;
+        }
+        
+        const url = getAiUrl();
+        const options = {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        };
+        const res = await fetchWithRetry(url, options);
+        if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
+          setAiSummary(res.candidates[0].content.parts[0].text);
+        }
       }
     } catch (error) {
       setAiSummary('เกิดข้อผิดพลาดในการเชื่อมต่อ AI');

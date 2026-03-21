@@ -11,8 +11,10 @@ import { colorMap, categoriesConfig } from '../ui/constants';
 import TaskBadges from '../ui/TaskBadges';
 import { formatDisplayDate } from '../../utils/dateUtils';
 import { fetchWithRetry } from '../../utils/apiUtils';
+import { AI_CONFIG, getAiUrl } from '../../utils/aiConfig';
+import { supabase } from '../../utils/supabaseClient';
 
-const DayPanel = ({ isOpen, onClose, date, initialData, onSave }) => {
+const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
   const [notes, setNotes] = useState('');
   const [category, setCategory] = useState('work');
   const [tasks, setTasks] = useState([]);
@@ -155,7 +157,6 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave }) => {
     setAiMessage('');
     
     try {
-      const apiKey = "YOUR_API_KEY_HERE"; // Placeholder as per standard
       const systemPrompt = `คุณคือผู้ช่วยจัดการเวลาอัจฉริยะ จงอ่านข้อความ (Brain dump) และสกัดรายการสิ่งที่ต้องทำ (Tasks) ออกมาเป็น Checklist ย่อยๆ อย่างชาญฉลาด
       ข้อกำหนดในการวิเคราะห์:
       - text: ชื่องาน สั้นกระชับ เข้าใจง่าย
@@ -166,27 +167,44 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave }) => {
       - color: เลือกสีให้สะท้อนถึงตัวงานอัตโนมัติ
       ตอบกลับมาในรูปแบบ JSON ตาม Schema ที่กำหนดเท่านั้น`;
 
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: notes }] }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                tasks: { type: "ARRAY", items: { type: "OBJECT", properties: { text: { type: "STRING" }, time: { type: "STRING" }, priority: { type: "STRING" }, difficulty: { type: "STRING" }, level: { type: "STRING" }, color: { type: "STRING" } } } }
-              }
-            }
-          }
-        })
-      };
+      let generatedText = '';
 
-      const data = await fetchWithRetry(url, options);
-      const generatedText = data.candidates[0].content.parts[0].text;
+      if (AI_CONFIG.USE_BACKEND) {
+        // Option A: Use Supabase Edge Functions (Backend)
+        const { data, error } = await supabase.functions.invoke(AI_CONFIG.FUNCTION_NAME, {
+          body: { 
+            prompt: notes,
+            systemInstruction: systemPrompt,
+            useJson: true 
+          }
+        });
+        if (error) throw error;
+        generatedText = data.text;
+      } else {
+        // Option B: Direct Client Call (Frontend - Less Secure)
+        const apiKey = AI_CONFIG.GEMINI_API_KEY || DIRECT_KEY;
+        if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+          setAiMessage('กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ');
+          setTimeout(() => setAiMessage(''), 4000);
+          setIsGeneratingTasks(false);
+          return;
+        }
+        
+        const url = getAiUrl();
+        const options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: notes }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          })
+        };
+        const res = await fetchWithRetry(url, options);
+        generatedText = res.candidates[0].content.parts[0].text;
+      }
       
       if (generatedText) {
         const parsed = JSON.parse(generatedText);

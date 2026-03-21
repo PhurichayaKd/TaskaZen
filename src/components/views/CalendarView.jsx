@@ -188,6 +188,7 @@ const CalendarView = ({ store, viewMode }) => {
         date={selectedDate} 
         initialData={selectedDate ? dayDataMap[formatDateToString(selectedDate)] : null} 
         onSave={(data) => { if (selectedDate) saveData(formatDateToString(selectedDate), data); }} 
+        store={store}
       />
     </div>
   );
