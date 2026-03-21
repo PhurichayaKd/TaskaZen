@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../utils/supabaseClient';
-import { FileText, LogIn, Loader2, Sparkles } from 'lucide-react';
+import { FileText, LogIn, Loader2, Sparkles, Target } from 'lucide-react';
 import Button from '../ui/Button';
 
 const LoginView = () => {
