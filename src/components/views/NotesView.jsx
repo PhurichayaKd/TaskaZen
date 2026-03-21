@@ -254,23 +254,20 @@ const NotesView = ({ store }) => {
       const prompt = `ช่วยสรุปเนื้อหาในโน้ตนี้ให้สั้น กระชับ และได้ใจความสำคัญ: "${text}"`;
       
       if (AI_CONFIG.USE_BACKEND) {
-        // Option A: Backend Call - Direct Fetch for more reliability
-        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${AI_CONFIG.FUNCTION_NAME}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
-          },
-          body: JSON.stringify({ prompt })
+        // Option A: Backend Call
+        const { data, error: invokeError } = await supabase.functions.invoke(AI_CONFIG.FUNCTION_NAME, {
+          body: { prompt }
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('AI Backend Error:', errorData);
-          throw new Error(errorData.details || errorData.message || errorData.error || 'Backend request failed');
+        if (invokeError) {
+          console.error('AI Invoke Error:', invokeError);
+          throw new Error(invokeError.message || 'AI Service Error');
         }
 
-        const data = await response.json();
+        if (!data || !data.text) {
+          throw new Error('AI returned an empty response');
+        }
+
         setAiSummary(data.text);
       } else {
         // Option B: Direct Call

@@ -12,45 +12,28 @@ serve(async (req: Request) => {
   }
 
   try {
-    if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ error: "Method not allowed. Use POST." }), { 
-        status: 405, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      });
-    }
-
     // 2. Read Body
-    let body;
-    try {
-      body = await req.json();
-    } catch (e) {
-      return new Response(JSON.stringify({ error: "Invalid JSON or empty body", details: e.message }), { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      });
-    }
-
-    const { prompt, systemInstruction, useJson } = body;
+    const { prompt, systemInstruction, useJson } = await req.json();
 
     if (!prompt) {
-      return new Response(JSON.stringify({ error: "Missing 'prompt' in request body" }), { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      return new Response(JSON.stringify({ error: "Missing 'prompt' in request body" }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     // 3. Get API Key
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "Backend Config Error: GEMINI_API_KEY is missing in Supabase Secrets" }), { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      return new Response(JSON.stringify({ error: "GEMINI_API_KEY is not set in Supabase Secrets" }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    // 4. Call Google Gemini API
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    
+
+    // 4. Call Google Gemini API
     const googlePayload = {
       contents: [{ parts: [{ text: prompt }] }],
       system_instruction: systemInstruction ? {
@@ -70,13 +53,12 @@ serve(async (req: Request) => {
     const googleData = await googleRes.json();
 
     if (!googleRes.ok) {
-      return new Response(JSON.stringify({ 
-        error: "Google AI API Error", 
-        details: googleData.error?.message || "Unknown error from Google",
-        status: googleRes.status
-      }), { 
-        status: googleRes.status, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      return new Response(JSON.stringify({
+        error: "Google AI API Error",
+        message: googleData.error?.message || "Unknown error from Google"
+      }), {
+        status: googleRes.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -88,13 +70,12 @@ serve(async (req: Request) => {
     });
 
   } catch (err: any) {
-    console.error("Critical Function Error:", err);
-    return new Response(JSON.stringify({ 
-      error: "Edge Function Runtime Error", 
-      message: err.message 
-    }), { 
-      status: 500, 
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    return new Response(JSON.stringify({
+      error: "Edge Function Error",
+      message: err.message
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 })
