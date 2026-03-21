@@ -254,11 +254,22 @@ const NotesView = ({ store }) => {
       const prompt = `ช่วยสรุปเนื้อหาในโน้ตนี้ให้สั้น กระชับ และได้ใจความสำคัญ: "${text}"`;
       
       if (AI_CONFIG.USE_BACKEND) {
-        // Option A: Backend Call
-        const { data, error } = await supabase.functions.invoke(AI_CONFIG.FUNCTION_NAME, {
-          body: { prompt }
+        // Option A: Backend Call - Direct Fetch for more reliability
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${AI_CONFIG.FUNCTION_NAME}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify({ prompt })
         });
-        if (error) throw error;
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Backend request failed');
+        }
+
+        const data = await response.json();
         setAiSummary(data.text);
       } else {
         // Option B: Direct Call

@@ -6,35 +6,47 @@ const corsHeaders = {
 }
 
 serve(async (req: Request) => {
-  // 1. จัดการ CORS
+  // 1. Handle CORS Preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // 2. อ่านข้อมูลจาก Body
-    const body = await req.json().catch(() => null);
-    
-    if (!body || !body.prompt) {
-      return new Response(JSON.stringify({ error: "กรุณาส่ง prompt มาด้วยครับ" }), {
+    // 2. Parse Body safely
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      console.error("Error parsing JSON body:", e);
+      return new Response(JSON.stringify({ error: "Invalid JSON or empty body" }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
+        status: 400
       });
     }
 
     const { prompt, systemInstruction, useJson } = body;
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-
-    if (!GEMINI_API_KEY) {
-      return new Response(JSON.stringify({ error: "ยังไม่ได้ตั้งค่า GEMINI_API_KEY ใน Supabase" }), {
+    
+    if (!prompt) {
+      return new Response(JSON.stringify({ error: "No prompt provided" }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
+        status: 400
+      });
+    }
+
+    // 3. Get API Key
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    if (!GEMINI_API_KEY) {
+      console.error("GEMINI_API_KEY missing from secrets");
+      return new Response(JSON.stringify({ error: "API Key not configured on server" }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
       });
     }
 
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    const response = await fetch(API_URL, {
+    // 4. Call Gemini
+    const geminiRes = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -44,10 +56,17 @@ serve(async (req: Request) => {
       })
     });
 
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+    const data = await geminiRes.json();
+    
+    if (data.error) {
+      console.error("Gemini API Error:", data.error);
+      return new Response(JSON.stringify({ error: data.error.message }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      });
+    }
 
-    const text = data.candidates[0].content.parts[0].text;
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -55,7 +74,8 @@ serve(async (req: Request) => {
     });
 
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Critical Function Error:", error);
+    return new Response(JSON.stringify({ error: error.message || "Internal Server Error" }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     });
