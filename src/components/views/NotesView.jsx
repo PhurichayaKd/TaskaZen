@@ -281,6 +281,7 @@ const NotesView = ({ store }) => {
         }
         
         const url = getAiUrl();
+        console.log("Calling AI URL (Direct):", url.split('key=')[0] + 'key=HIDDEN'); // Log URL safely
         const options = {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })

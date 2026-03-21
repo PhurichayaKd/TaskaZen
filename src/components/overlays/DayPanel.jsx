@@ -201,6 +201,7 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
         }
         
         const url = getAiUrl();
+        console.log("Calling AI URL (Direct):", url.split('key=')[0] + 'key=HIDDEN'); // Log URL safely
         const options = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
