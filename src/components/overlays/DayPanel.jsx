@@ -174,7 +174,8 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
         const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${AI_CONFIG.FUNCTION_NAME}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
           },
           body: JSON.stringify({ 
             prompt: notes,
@@ -185,7 +186,9 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || errorData.error || 'Backend request failed');
+          // Log the full error for debugging
+          console.error('AI Backend Error:', errorData);
+          throw new Error(errorData.details || errorData.message || errorData.error || 'Backend request failed');
         }
 
         const data = await response.json();
