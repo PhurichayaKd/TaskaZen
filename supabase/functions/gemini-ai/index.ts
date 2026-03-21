@@ -12,13 +12,23 @@ serve(async (req: Request) => {
   }
 
   try {
-    // 2. Parse Body safely
+    // 2. Parse Body safely - Using req.text() first for debugging
+    const rawBody = await req.text();
+    console.log("Raw request body:", rawBody);
+
+    if (!rawBody || rawBody.trim() === "") {
+      return new Response(JSON.stringify({ error: "Request body is empty" }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400
+      });
+    }
+
     let body;
     try {
-      body = await req.json();
+      body = JSON.parse(rawBody);
     } catch (e) {
-      console.error("Error parsing JSON body:", e);
-      return new Response(JSON.stringify({ error: "Invalid JSON or empty body" }), {
+      console.error("JSON parse error:", e.message);
+      return new Response(JSON.stringify({ error: "Invalid JSON format" }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400
       });
@@ -27,7 +37,7 @@ serve(async (req: Request) => {
     const { prompt, systemInstruction, useJson } = body;
     
     if (!prompt) {
-      return new Response(JSON.stringify({ error: "No prompt provided" }), {
+      return new Response(JSON.stringify({ error: "No prompt provided in JSON" }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400
       });
@@ -37,7 +47,7 @@ serve(async (req: Request) => {
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     if (!GEMINI_API_KEY) {
       console.error("GEMINI_API_KEY missing from secrets");
-      return new Response(JSON.stringify({ error: "API Key not configured on server" }), {
+      return new Response(JSON.stringify({ error: "GEMINI_API_KEY not set in Supabase Secrets" }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       });
