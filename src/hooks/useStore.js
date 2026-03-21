@@ -11,6 +11,12 @@ export const useStore = (session) => {
   const [workspaceTasks, setWorkspaceTasks] = useState([]);
   const [activeTimerId, setActiveTimerId] = useState(null);
 
+  // Profile & Settings
+  const [profile, setProfile] = useState({
+    fullName: '',
+    theme: 'light'
+  });
+
   // NEW Gamification State
   const [rewards, setRewards] = useState({
     trophies: 0,
@@ -35,24 +41,28 @@ export const useStore = (session) => {
     setIsLoading(true);
     try {
       // 1. Fetch Profile/Rewards
-      const { data: profile } = await supabase
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', session.user.id)
         .single();
       
-      if (profile) {
+      if (profileData) {
+        setProfile({
+          fullName: profileData.full_name || session.user.user_metadata?.full_name || '',
+          theme: profileData.theme || 'light'
+        });
         setRewards(prev => ({
           ...prev,
-          trophies: profile.trophies,
-          bronzeCoins: profile.bronze_coins,
-          silverCoins: profile.silver_coins,
-          goldCoins: profile.gold_coins,
-          silverShields: profile.silver_shields,
-          goldCrowns: profile.gold_crowns,
-          totalScore: profile.total_score,
-          dailyScore: profile.daily_score,
-          yearlyScore: profile.yearly_score
+          trophies: profileData.trophies,
+          bronzeCoins: profileData.bronze_coins,
+          silverCoins: profileData.silver_coins,
+          goldCoins: profileData.gold_coins,
+          silverShields: profileData.silver_shields,
+          goldCrowns: profileData.gold_crowns,
+          totalScore: profileData.total_score,
+          dailyScore: profileData.daily_score,
+          yearlyScore: profileData.yearly_score
         }));
       }
 
@@ -298,6 +308,22 @@ export const useStore = (session) => {
 
   const setToday = () => setCurrentDate(new Date());
 
+  const updateUserProfile = async (updates) => {
+    if (!session) return;
+    
+    // Convert camelCase to snake_case for DB
+    const dbUpdates = {};
+    if (updates.fullName !== undefined) dbUpdates.full_name = updates.fullName;
+    if (updates.theme !== undefined) dbUpdates.theme = updates.theme;
+    
+    setProfile(prev => ({ ...prev, ...updates }));
+    
+    await supabase
+      .from('profiles')
+      .update({ ...dbUpdates, updated_at: new Date().toISOString() })
+      .eq('id', session.user.id);
+  };
+
   const saveData = async (dateStr, data) => {
     setDayDataMap(prev => ({ ...prev, [dateStr]: data }));
     
@@ -402,11 +428,13 @@ export const useStore = (session) => {
 
   return { 
     isLoading,
-    currentDate, selectedDate, setSelectedDate, setMonth, setToday, dayDataMap, saveData,
+    currentDate, setCurrentDate, selectedDate, setSelectedDate, setMonth, setToday, dayDataMap, saveData,
     workspaceTasks, activeTimerId, addWorkspaceTask, startTimer, updateTaskTime, completeWorkspaceTask,
     notes, addNote, updateNote, deleteNote,
     images, addImage, deleteImage,
-    rewards, addScore, exchangeReward
+    rewards, addScore, exchangeReward,
+    profile, updateUserProfile,
+    session // Add session to returned object
   };
 };
 

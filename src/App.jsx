@@ -12,14 +12,24 @@ import NotesView from './components/views/NotesView';
 import LoginView from './components/views/LoginView';
 import FloatingTimer from './components/overlays/FloatingTimer';
 import CompletionAnimationOverlay from './components/overlays/CompletionAnimationOverlay';
+import SettingsModal from './components/overlays/SettingsModal';
 
 export default function App() {
   const [session, setSession] = useState(null);
   const store = useStore(session);
   const [activeTab, setActiveTab] = useState('home');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [viewMode, setViewMode] = useState('custom');
   const [animationData, setAnimationData] = useState(null);
+
+  useEffect(() => {
+    if (store.profile.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [store.profile.theme]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -127,9 +137,12 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-zinc-100 shrink-0 space-y-2">
-           <button className={`w-full flex items-center p-2 rounded-xl text-zinc-500 hover:bg-zinc-100 transition-colors border border-transparent ${!isSidebarOpen && 'justify-center'}`}>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white overflow-hidden">
+        <div className="p-4 border-t border-zinc-100 dark:border-zen-dark-border shrink-0 space-y-2">
+           <button 
+             onClick={() => setIsSettingsOpen(true)}
+             className={`w-full flex items-center p-2 rounded-xl text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border border-transparent ${!isSidebarOpen && 'justify-center'}`}
+           >
+              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white dark:border-zen-dark-border overflow-hidden">
                 {session?.user?.user_metadata?.avatar_url ? (
                   <img src={session.user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
@@ -137,9 +150,9 @@ export default function App() {
                 )}
               </div>
               {isSidebarOpen && (
-                <div className="ml-3 flex flex-col items-start truncate">
-                  <span className="text-sm font-bold text-zinc-900">{session?.user?.user_metadata?.full_name || 'User'}</span>
-                  <span className="text-[10px] text-zinc-500 font-medium">{session?.user?.email}</span>
+                <div className="ml-3 flex flex-col items-start truncate text-left">
+                  <span className="text-sm font-bold text-zinc-900 dark:text-white truncate w-full">{store.profile.fullName || 'User'}</span>
+                  <span className="text-[10px] text-zinc-500 dark:text-zinc-500 font-medium truncate w-full">{session?.user?.email}</span>
                 </div>
               )}
            </button>
@@ -147,7 +160,7 @@ export default function App() {
            {isSidebarOpen && (
              <button 
                onClick={() => supabase.auth.signOut()}
-               className="w-full flex items-center p-2.5 rounded-xl text-red-500 hover:bg-red-50 transition-colors border border-transparent"
+               className="w-full flex items-center p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors border border-transparent"
              >
                <LogOut className="w-5 h-5 mr-3" />
                <span className="text-sm font-bold">ออกจากระบบ</span>
@@ -160,36 +173,36 @@ export default function App() {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
         
         {/* Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-zinc-200 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 sticky top-0">
+        <header className="bg-white/80 dark:bg-zen-dark-bg/80 backdrop-blur-md border-b border-zinc-200 dark:border-zen-dark-border h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 sticky top-0">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
-              className="p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 rounded-md transition-colors focus:outline-none"
+              className="p-1.5 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white rounded-md transition-colors focus:outline-none"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900">{currentTabTitle}</h1>
+            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">{currentTabTitle}</h1>
           </div>
           
           <div className="flex items-center gap-4">
             {activeTab === 'calendar' && (
-              <div className="flex bg-zinc-100/80 p-1 rounded-lg border border-zinc-200/60 shadow-inner">
+              <div className="flex bg-zinc-100/80 dark:bg-zinc-900/50 p-1 rounded-lg border border-zinc-200/60 dark:border-zen-dark-border shadow-inner">
                 <button 
                   onClick={() => setViewMode('custom')} 
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'custom' ? 'bg-white text-indigo-600 shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'custom' ? 'bg-white dark:bg-zen-dark-card text-indigo-600 dark:text-indigo-400 shadow-sm border border-zinc-200/50 dark:border-zen-dark-border' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
                 >
                   <Edit3 className="w-3.5 h-3.5" /> แก้ไข (Custom)
                 </button>
                 <button 
                   onClick={() => setViewMode('view')} 
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'view' ? 'bg-white text-indigo-600 shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'view' ? 'bg-white dark:bg-zen-dark-card text-indigo-600 dark:text-indigo-400 shadow-sm border border-zinc-200/50 dark:border-zen-dark-border' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
                 >
                   <Layout className="w-3.5 h-3.5" /> ภาพรวม (View)
                 </button>
               </div>
             )}
             {activeTab === 'home' && (
-               <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-500">
+               <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                  ระบบซิงค์ข้อมูลล่าสุดแล้ว
                </div>
@@ -198,7 +211,7 @@ export default function App() {
         </header>
 
         {/* Dynamic Views Rendering */}
-        <main className="flex-1 overflow-hidden flex flex-col relative z-0">
+        <main className="flex-1 overflow-hidden flex flex-col relative z-0 bg-zinc-50/50 dark:bg-zen-dark-bg">
           {activeTab === 'home' && <HomeView store={store} />}
           {activeTab === 'calendar' && <CalendarView store={store} viewMode={viewMode} />}
           {activeTab === 'workspace' && <WorkspaceView store={store} />}
@@ -211,6 +224,12 @@ export default function App() {
       <AnimatePresence>
         {animationData && <CompletionAnimationOverlay data={animationData} onComplete={() => setAnimationData(null)} />}
       </AnimatePresence>
+
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        store={store} 
+      />
     </div>
   );
 }

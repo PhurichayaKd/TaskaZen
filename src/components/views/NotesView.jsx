@@ -299,40 +299,40 @@ const NotesView = ({ store }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-zinc-50 relative overflow-hidden font-sans">
+    <div className="flex-1 flex flex-col h-full bg-zinc-50 dark:bg-zen-dark-bg relative overflow-hidden font-sans">
       
       {/* Top Toolbar */}
-      <div className="h-16 border-b border-zinc-200 bg-white flex items-center justify-between px-6 shrink-0 z-30 shadow-sm">
+      <div className="h-16 border-b border-zinc-200 dark:border-zen-dark-border bg-white dark:bg-zen-dark-card flex items-center justify-between px-6 shrink-0 z-30 shadow-sm">
         <div className="flex items-center gap-1">
-          <Button variant={showHistory ? 'primary' : 'ghost'} size="sm" onClick={() => setShowHistory(!showHistory)} className="h-9 gap-2">
+          <Button variant={showHistory ? 'primary' : 'ghost'} size="sm" onClick={() => setShowHistory(!showHistory)} className="h-9 gap-2 dark:text-zinc-400 dark:hover:bg-zinc-800">
             <History className="w-4 h-4" /> ดูย้อนหลัง
           </Button>
           
           {showHistory && (
-            <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 ml-4">
+            <div className="flex bg-zinc-100 dark:bg-zinc-900/50 p-1 rounded-xl border border-zinc-200 dark:border-zen-dark-border ml-4">
               {['all', ...templates.map(t => t.id)].map(filter => (
                 <button 
                   key={filter} 
                   onClick={() => setHistoryFilter(filter)}
-                  className={`px-3 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${historyFilter === filter ? 'bg-white text-indigo-600 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'}`}
+                  className={`px-3 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${historyFilter === filter ? 'bg-white dark:bg-zen-dark-card text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'}`}
                 >
                   {filter}
                 </button>
               ))}
             </div>
           )}
-          <div className="h-6 w-px bg-zinc-200 mx-2" />
+          <div className="h-6 w-px bg-zinc-200 dark:bg-zen-dark-border mx-2" />
           
           {!showHistory && (
               <div className="flex items-center gap-1">
-                <button onMouseDown={(e) => { e.preventDefault(); execCommand('bold'); }} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="ตัวหนา"><Bold className="w-4 h-4" /></button>
-                <button onMouseDown={(e) => { e.preventDefault(); execCommand('italic'); }} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="ตัวเอียง"><Italic className="w-4 h-4" /></button>
-                <button onMouseDown={(e) => { e.preventDefault(); execCommand('underline'); }} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="ขีดเส้นใต้"><Underline className="w-4 h-4" /></button>
+                <button onMouseDown={(e) => { e.preventDefault(); execCommand('bold'); }} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400" title="ตัวหนา"><Bold className="w-4 h-4" /></button>
+                <button onMouseDown={(e) => { e.preventDefault(); execCommand('italic'); }} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400" title="ตัวเอียง"><Italic className="w-4 h-4" /></button>
+                <button onMouseDown={(e) => { e.preventDefault(); execCommand('underline'); }} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400" title="ขีดเส้นใต้"><Underline className="w-4 h-4" /></button>
                 
                 <div className="relative">
-                  <button onClick={() => setShowColorPicker(showColorPicker === 'text' ? null : 'text')} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="สีตัวอักษร"><Palette className="w-5 h-5" /></button>
+                  <button onClick={() => setShowColorPicker(showColorPicker === 'text' ? null : 'text')} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400" title="สีตัวอักษร"><Palette className="w-5 h-5" /></button>
                   {showColorPicker === 'text' && (
-                    <div className="absolute top-full left-0 mt-2 p-2 bg-white border border-zinc-200 rounded-xl shadow-xl flex gap-2 z-50">
+                    <div className="absolute top-full left-0 mt-2 p-2 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-xl shadow-xl flex gap-2 z-50">
                       {colors.map(c => (
                         <button key={c.name} onMouseDown={(e) => { e.preventDefault(); execCommand('foreColor', c.hex); setShowColorPicker(null); }} className={`w-6 h-6 rounded-full ${c.bg} hover:scale-110 transition-all`} />
                       ))}
@@ -341,9 +341,9 @@ const NotesView = ({ store }) => {
                 </div>
                 
                 <div className="relative">
-                  <button onClick={() => setShowColorPicker(showColorPicker === 'highlight' ? null : 'highlight')} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="ไฮไลท์"><Highlighter className="w-5 h-5" /></button>
+                  <button onClick={() => setShowColorPicker(showColorPicker === 'highlight' ? null : 'highlight')} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400" title="ไฮไลท์"><Highlighter className="w-5 h-5" /></button>
                   {showColorPicker === 'highlight' && (
-                    <div className="absolute top-full left-0 mt-2 p-2 bg-white border border-zinc-200 rounded-xl shadow-xl flex gap-2 z-50">
+                    <div className="absolute top-full left-0 mt-2 p-2 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-xl shadow-xl flex gap-2 z-50">
                       {highlights.map(c => (
                         <button key={c.name} onMouseDown={(e) => { e.preventDefault(); execCommand('hiliteColor', c.hex); setShowColorPicker(null); }} className={`w-6 h-6 rounded-full ${c.bg} hover:scale-110 transition-all`} />
                       ))}
@@ -352,57 +352,57 @@ const NotesView = ({ store }) => {
                 </div>
 
               <div className="relative">
-                <button onClick={() => setShowFontSizePicker(!showFontSizePicker)} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="ขนาดตัวอักษร"><Type className="w-5 h-5" /></button>
+                <button onClick={() => setShowFontSizePicker(!showFontSizePicker)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400" title="ขนาดตัวอักษร"><Type className="w-5 h-5" /></button>
                 {showFontSizePicker && (
-                  <div className="absolute top-full left-0 mt-2 p-1 bg-white border border-zinc-200 rounded-xl shadow-xl z-50 flex flex-col min-w-[70px] max-h-64 overflow-y-auto custom-scrollbar">
+                  <div className="absolute top-full left-0 mt-2 p-1 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-xl shadow-xl z-50 flex flex-col min-w-[70px] max-h-64 overflow-y-auto custom-scrollbar">
                     {fontSizes.map(size => (
-                      <button key={size} onMouseDown={(e) => { e.preventDefault(); applyFontSize(size); }} className="px-3 py-2 text-xs text-left hover:bg-zinc-50 rounded-md font-medium border-b border-zinc-50 last:border-0">{size}px</button>
+                      <button key={size} onMouseDown={(e) => { e.preventDefault(); applyFontSize(size); }} className="px-3 py-2 text-xs text-left hover:bg-zinc-50 dark:hover:bg-zinc-800 dark:text-zinc-300 rounded-md font-medium border-b border-zinc-50 dark:border-zen-dark-border last:border-0">{size}px</button>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="h-6 w-px bg-zinc-100 mx-1" />
+              <div className="h-6 w-px bg-zinc-100 dark:bg-zen-dark-border mx-1" />
               <div className="relative group">
-                <button onClick={handleAddFloatingBox} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="เพิ่มกล่องข้อความ">
-                  <div className="w-5 h-5 border-2 border-zinc-500 rounded-md flex items-center justify-center text-[11px] font-black bg-white group-hover:bg-zinc-50 transition-colors">A</div>
+                <button onClick={handleAddFloatingBox} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400" title="เพิ่มกล่องข้อความ">
+                  <div className="w-5 h-5 border-2 border-zinc-500 dark:border-zinc-500 rounded-md flex items-center justify-center text-[11px] font-black bg-white dark:bg-zen-dark-card group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors">A</div>
                 </button>
               </div>
               
               {/* Box Color Picker (Only visible when box is active) */}
               <AnimatePresence>
                 {activeBoxId && showBoxMenu && currentNote.floatingBoxes.find(b => b.id === activeBoxId) && (
-                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex items-center gap-1 ml-1 bg-zinc-50 p-1 rounded-xl border border-zinc-200 shadow-sm">
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex items-center gap-1 ml-1 bg-zinc-50 dark:bg-zinc-900/50 p-1 rounded-xl border border-zinc-200 dark:border-zen-dark-border shadow-sm">
                     {boxColors.map(bc => (
-                      <button key={bc.name} onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); updateFloatingBox(activeBoxId, { color: bc.bg }); }} className={`w-5 h-5 rounded-lg ${bc.bg} border-2 ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.color === bc.bg ? 'border-indigo-400' : 'border-zinc-200'} hover:scale-110 transition-all`} />
+                      <button key={bc.name} onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); updateFloatingBox(activeBoxId, { color: bc.bg }); }} className={`w-5 h-5 rounded-lg ${bc.bg} border-2 ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.color === bc.bg ? 'border-indigo-400' : 'border-zinc-200 dark:border-zen-dark-border'} hover:scale-110 transition-all`} />
                     ))}
-                    <div className="w-px h-5 bg-zinc-200 mx-1" />
+                    <div className="w-px h-5 bg-zinc-200 dark:bg-zen-dark-border mx-1" />
                     <button onMouseDown={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       const box = currentNote.floatingBoxes.find(b => b.id === activeBoxId);
                       if (box) updateFloatingBox(activeBoxId, { isLocked: !box.isLocked });
-                    }} className={`p-1.5 rounded-lg transition-all ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? 'text-indigo-600 bg-indigo-50 shadow-inner' : 'text-zinc-400 hover:text-zinc-600'}`} title={currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? "Unlock" : "Lock"}>
+                    }} className={`p-1.5 rounded-lg transition-all ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 shadow-inner' : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'}`} title={currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? "Unlock" : "Lock"}>
                       {currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <button className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-400" title="ลูกศร (Coming Soon)"><ArrowUpRight className="w-5 h-5" /></button>
+              <button className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 dark:text-zinc-600" title="ลูกศร (Coming Soon)"><ArrowUpRight className="w-5 h-5" /></button>
               
               <div className="relative">
-                <button onClick={() => setShowBoxImageGallery(!showImageGallery)} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="คลังภาพ"><ImageIcon className="w-5 h-5" /></button>
+                <button onClick={() => setShowBoxImageGallery(!showImageGallery)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400" title="คลังภาพ"><ImageIcon className="w-5 h-5" /></button>
                 {showImageGallery && (
-                  <div className="absolute top-full left-0 mt-2 p-4 bg-white border border-zinc-200 rounded-3xl shadow-2xl z-50 w-80">
+                  <div className="absolute top-full left-0 mt-2 p-4 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-3xl shadow-2xl z-50 w-80">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Image Gallery</span>
-                      <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all"><Plus className="w-4 h-4" /></button>
+                      <span className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Image Gallery</span>
+                      <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800 transition-all"><Plus className="w-4 h-4" /></button>
                       <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
                     </div>
                     <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto custom-scrollbar">
                       {images.map(img => (
-                        <div key={img.id} className="relative group/img aspect-square rounded-xl overflow-hidden border border-zinc-100 bg-zinc-50">
+                        <div key={img.id} className="relative group/img aspect-square rounded-xl overflow-hidden border border-zinc-100 dark:border-zen-dark-border bg-zinc-50 dark:bg-zinc-900/50">
                           <img 
                             src={img.url} 
                             onClick={() => { insertImage(img.url); setShowBoxImageGallery(false); }}
@@ -410,14 +410,14 @@ const NotesView = ({ store }) => {
                           />
                           <button 
                             onClick={() => deleteImage(img.id)}
-                            className="absolute top-1 right-1 p-1 bg-white/80 backdrop-blur-sm rounded-md text-red-500 opacity-0 group-hover/img:opacity-100 transition-opacity"
+                            className="absolute top-1 right-1 p-1 bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-md text-red-500 opacity-0 group-hover/img:opacity-100 transition-opacity"
                           >
                             <X className="w-3 h-3" />
                           </button>
                         </div>
                       ))}
                       {images.length === 0 && (
-                        <div className="col-span-3 py-8 text-center text-[10px] font-bold text-zinc-300 uppercase">No Images</div>
+                        <div className="col-span-3 py-8 text-center text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase">No Images</div>
                       )}
                     </div>
                   </div>
@@ -425,31 +425,31 @@ const NotesView = ({ store }) => {
               </div>
 
               <div className="relative">
-                <button onClick={() => setShowLinkDialog(!showLinkDialog)} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="เพิ่มลิงก์"><LinkIcon className="w-5 h-5" /></button>
+                <button onClick={() => setShowLinkDialog(!showLinkDialog)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400" title="เพิ่มลิงก์"><LinkIcon className="w-5 h-5" /></button>
                 {showLinkDialog && (
-                  <div className="absolute top-full left-0 mt-2 p-4 bg-white border border-zinc-200 rounded-3xl shadow-2xl z-50 w-72 space-y-3">
-                    <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Add Link</div>
+                  <div className="absolute top-full left-0 mt-2 p-4 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-3xl shadow-2xl z-50 w-72 space-y-3">
+                    <div className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Add Link</div>
                     <input 
                       type="text" placeholder="URL (เช่น https://...)" 
                       value={linkData.url} onChange={e => setLinkData({...linkData, url: e.target.value})}
-                      className="w-full p-2 text-xs border border-zinc-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full p-2 text-xs border border-zinc-100 dark:border-zen-dark-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-zinc-900 dark:text-white"
                     />
                     <input 
                       type="text" placeholder="ชื่อเรียก (ถ้ามี)" 
                       value={linkData.text} onChange={e => setLinkData({...linkData, text: e.target.value})}
-                      className="w-full p-2 text-xs border border-zinc-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full p-2 text-xs border border-zinc-100 dark:border-zen-dark-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-zinc-900 dark:text-white"
                     />
                     <Button onClick={insertLink} variant="primary" size="sm" className="w-full h-8 rounded-xl text-[10px] font-black uppercase">Insert Link</Button>
                   </div>
                 )}
               </div>
 
-              <button onClick={handleExportPDF} disabled={isExporting} className="p-2 rounded-lg hover:bg-zinc-100 text-indigo-600" title="ส่งออก PDF">
+              <button onClick={handleExportPDF} disabled={isExporting} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-indigo-600 dark:text-indigo-400" title="ส่งออก PDF">
                 {isExporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
               </button>
 
-              <div className="h-6 w-px bg-zinc-200 mx-2" />
-              <button onClick={handleAiSummarize} disabled={isAnalyzing} className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all flex items-center gap-2 border border-indigo-100" title="AI สรุปใจความ">
+              <div className="h-6 w-px bg-zinc-200 dark:bg-zen-dark-border mx-2" />
+              <button onClick={handleAiSummarize} disabled={isAnalyzing} className="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800 transition-all flex items-center gap-2 border border-indigo-100 dark:border-indigo-900/50" title="AI สรุปใจความ">
                 {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                 <span className="text-xs font-black uppercase tracking-widest hidden sm:inline">AI ASSIST</span>
               </button>
@@ -458,33 +458,33 @@ const NotesView = ({ store }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="text-xs text-zinc-400 font-medium">{saveStatus === 'saving' ? 'Saving...' : 'Autosaved'}</div>
+          <div className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">{saveStatus === 'saving' ? 'Saving...' : 'Autosaved'}</div>
           <div className="relative">
             <Button variant="primary" size="sm" onClick={() => setShowTemplatePicker(!showTemplatePicker)} className="gap-2 h-9 rounded-xl shadow-md hover:shadow-lg transition-all">
               <Plus className="w-4 h-4" /> เพิ่มหน้า
             </Button>
             {showTemplatePicker && (
-              <div className="absolute top-full right-0 mt-3 w-72 bg-white border border-zinc-200 rounded-3xl shadow-2xl p-4 z-50 grid grid-cols-1 gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full right-0 mt-3 w-72 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-3xl shadow-2xl p-4 z-50 grid grid-cols-1 gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
                 {templates.map(t => (
-                  <button key={t.id} onMouseDown={(e) => { e.preventDefault(); handleAddPage(t.id); }} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-indigo-50/50 text-left group transition-all border border-transparent hover:border-indigo-100">
-                    <div className="w-12 h-12 rounded-2xl bg-zinc-50 flex items-center justify-center group-hover:bg-white group-hover:text-indigo-600 shadow-sm group-hover:shadow transition-all"><t.icon className="w-6 h-6" /></div>
-                    <div><p className="text-sm font-black text-zinc-800 group-hover:text-indigo-700">{t.label}</p><p className="text-[11px] text-zinc-400 font-medium group-hover:text-indigo-400">{t.desc}</p></div>
+                  <button key={t.id} onMouseDown={(e) => { e.preventDefault(); handleAddPage(t.id); }} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 text-left group transition-all border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/50">
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-zen-dark-card group-hover:text-indigo-600 dark:group-hover:text-indigo-400 shadow-sm group-hover:shadow transition-all"><t.icon className="w-6 h-6" /></div>
+                    <div><p className="text-sm font-black text-zinc-800 dark:text-zinc-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-300">{t.label}</p><p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium group-hover:text-indigo-400 dark:group-hover:text-indigo-500">{t.desc}</p></div>
                   </button>
                 ))}
               </div>
             )}
           </div>
-          <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 shadow-sm">
-            <button onMouseDown={(e) => { e.preventDefault(); handlePrevPage(); }} disabled={currentIndex === 0} className="p-1.5 rounded-lg hover:bg-white disabled:opacity-30 transition-all"><ChevronLeft className="w-4 h-4" /></button>
-            <span className="px-3 text-xs font-black text-zinc-500 flex items-center tracking-tighter">{currentIndex + 1} / {notes.length}</span>
-            <button onMouseDown={(e) => { e.preventDefault(); handleNextPage(); }} disabled={currentIndex === notes.length - 1} className="p-1.5 rounded-lg hover:bg-white disabled:opacity-30 transition-all"><ChevronRight className="w-4 h-4" /></button>
+          <div className="flex bg-zinc-100 dark:bg-zinc-900/50 p-1 rounded-xl border border-zinc-200 dark:border-zen-dark-border shadow-sm">
+            <button onMouseDown={(e) => { e.preventDefault(); handlePrevPage(); }} disabled={currentIndex === 0} className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-zinc-800 disabled:opacity-30 transition-all dark:text-zinc-400"><ChevronLeft className="w-4 h-4" /></button>
+            <span className="px-3 text-xs font-black text-zinc-500 dark:text-zinc-400 flex items-center tracking-tighter">{currentIndex + 1} / {notes.length}</span>
+            <button onMouseDown={(e) => { e.preventDefault(); handleNextPage(); }} disabled={currentIndex === notes.length - 1} className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-zinc-800 disabled:opacity-30 transition-all dark:text-zinc-400"><ChevronRight className="w-4 h-4" /></button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div 
-        className="flex-1 overflow-y-auto custom-scrollbar bg-zinc-50 p-4 sm:p-12" 
+        className="flex-1 overflow-y-auto custom-scrollbar bg-zinc-50 dark:bg-zen-dark-bg p-4 sm:p-12" 
         onMouseDown={() => { setActiveBoxId(null); setShowBoxMenu(false); }} // Close when clicking anywhere on background
       >
         <div className="max-w-[1400px] mx-auto min-h-full relative" onMouseDown={(e) => e.stopPropagation()}>
@@ -493,20 +493,20 @@ const NotesView = ({ store }) => {
               <motion.div
                 key={currentNote.id} ref={paperRef} custom={direction} initial="initial" animate="animate" exit="exit"
                 variants={pageVariants}
-                className={`w-full flex-1 bg-white shadow-2xl rounded-sm relative flex flex-col transition-all duration-500
+                className={`w-full flex-1 bg-white dark:bg-zen-dark-card shadow-2xl rounded-sm relative flex flex-col transition-all duration-500
                   ${currentNote.template === 'slide' ? 'aspect-[16/9] min-h-0' : 'min-h-[1400px]'}
-                  ${currentNote.template === 'notebook' ? 'bg-[linear-gradient(#e5e7eb_1px,transparent_1px)] bg-[size:100%_2.5rem] !leading-[2.5rem]' : ''}
+                  ${currentNote.template === 'notebook' ? 'bg-[linear-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[linear-gradient(#334155_1px,transparent_1px)] bg-[size:100%_2.5rem] !leading-[2.5rem]' : ''}
                 `}
                 onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking on the paper
               >
-                {currentNote.template === 'notebook' && <div className="absolute left-20 top-0 bottom-0 w-px bg-red-200 z-0" />}
+                {currentNote.template === 'notebook' && <div className="absolute left-20 top-0 bottom-0 w-px bg-red-200 dark:bg-red-900/30 z-0" />}
                 
                 <div className={`p-16 sm:p-24 flex-1 flex flex-col z-10 ${currentNote.template === 'notebook' ? 'pl-32 pt-[3.8rem]' : ''}`}>
                   {/* Unified Content Area (Title + Body) */}
                   <div 
                     ref={editorRef} contentEditable onInput={handleEditorChange}
                     onFocus={() => { setActiveBoxId(null); setShowBoxMenu(false); }}
-                    className={`flex-1 outline-none min-h-[800px] leading-relaxed ${currentNote.template === 'notebook' ? '!leading-[2.5rem]' : ''}`}
+                    className={`flex-1 outline-none min-h-[800px] leading-relaxed dark:text-zinc-300 prose dark:prose-invert max-w-none ${currentNote.template === 'notebook' ? '!leading-[2.5rem]' : ''}`}
                     style={{ fontSize: '18px' }}
                   />
 
@@ -528,7 +528,7 @@ const NotesView = ({ store }) => {
                         e.stopPropagation(); 
                         toggleActiveBox(box.id);
                       }}
-                      className={`absolute p-5 ${box.color} border-2 ${activeBoxId === box.id ? 'border-indigo-400 shadow-2xl z-40' : 'border-dashed border-zinc-200 z-20'} rounded-3xl shadow-xl min-w-[220px] group/box cursor-grab transition-all duration-200`}
+                      className={`absolute p-5 ${box.color} dark:bg-zen-dark-card border-2 ${activeBoxId === box.id ? 'border-indigo-400 dark:border-indigo-500 shadow-2xl z-40' : 'border-dashed border-zinc-200 dark:border-zen-dark-border z-20'} rounded-3xl shadow-xl min-w-[220px] group/box cursor-grab transition-all duration-200`}
                       style={{ left: box.x, top: box.y }}
                     >
                       <div 
@@ -537,28 +537,28 @@ const NotesView = ({ store }) => {
                         onFocus={() => { setActiveBoxId(box.id); setShowBoxMenu(true); }}
                         onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking text
                         dangerouslySetInnerHTML={{ __html: box.content }}
-                        className="outline-none text-sm leading-relaxed min-h-[1.5em] empty:before:content-[attr(placeholder)] empty:before:text-zinc-300"
+                        className="outline-none text-sm leading-relaxed min-h-[1.5em] dark:text-zinc-300 empty:before:content-[attr(placeholder)] empty:before:text-zinc-300 dark:empty:before:text-zinc-600"
                         placeholder="พิมพ์ข้อความ..."
                       />
                       
                       {/* Drag Handle Indicator */}
                       {!box.isLocked && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover/box:opacity-100 transition-all bg-white border border-zinc-200 rounded-full p-1 shadow-sm">
-                          <MousePointer2 className="w-3 h-3 text-indigo-500 fill-indigo-50" />
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover/box:opacity-100 transition-all bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-full p-1 shadow-sm">
+                          <MousePointer2 className="w-3 h-3 text-indigo-500 fill-indigo-50 dark:fill-indigo-950" />
                         </div>
                       )}
 
                       {/* Delete Button */}
                       <button 
                         onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); deleteFloatingBox(box.id); }}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-white border border-zinc-200 text-zinc-400 hover:text-red-500 hover:border-red-100 rounded-full flex items-center justify-center opacity-0 group-hover/box:opacity-100 transition-all shadow-sm hover:shadow-md"
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border text-zinc-400 hover:text-red-500 hover:border-red-100 rounded-full flex items-center justify-center opacity-0 group-hover/box:opacity-100 transition-all shadow-sm hover:shadow-md"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
 
                       {/* Lock Indicator Overlay */}
                       {box.isLocked && (
-                        <div className="absolute top-2 right-2 text-zinc-300">
+                        <div className="absolute top-2 right-2 text-zinc-300 dark:text-zinc-700">
                           <Lock className="w-3 h-3" />
                         </div>
                       )}
@@ -568,10 +568,10 @@ const NotesView = ({ store }) => {
                   {/* AI Summary Panel */}
                   <AnimatePresence>
                     {aiSummary && (
-                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="mt-8 p-6 bg-indigo-50 rounded-3xl border border-indigo-100 relative">
-                        <button onClick={() => setAiSummary('')} className="absolute top-4 right-4 text-indigo-300 hover:text-indigo-500"><X className="w-5 h-5" /></button>
-                        <div className="flex items-center gap-2 mb-3 text-[10px] font-black uppercase text-indigo-500"><Sparkles className="w-4 h-4" /> AI Summary</div>
-                        <p className="text-sm text-indigo-900 leading-relaxed italic">{aiSummary}</p>
+                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="mt-8 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-3xl border border-indigo-100 dark:border-indigo-900/50 relative">
+                        <button onClick={() => setAiSummary('')} className="absolute top-4 right-4 text-indigo-300 dark:text-indigo-600 hover:text-indigo-500"><X className="w-5 h-5" /></button>
+                        <div className="flex items-center gap-2 mb-3 text-[10px] font-black uppercase text-indigo-500 dark:text-indigo-400"><Sparkles className="w-4 h-4" /> AI Summary</div>
+                        <p className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed italic">{aiSummary}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -582,21 +582,21 @@ const NotesView = ({ store }) => {
                 {filteredNotes.map((note, index) => {
                   const originalIndex = notes.findIndex(n => n.id === note.id);
                   return (
-                    <div key={note.id} className="bg-white p-8 rounded-3xl border border-zinc-200 shadow-sm hover:shadow-2xl transition-all group h-96 flex flex-col relative overflow-hidden">
+                    <div key={note.id} className="bg-white dark:bg-zen-dark-card p-8 rounded-3xl border border-zinc-200 dark:border-zen-dark-border shadow-sm hover:shadow-2xl transition-all group h-96 flex flex-col relative overflow-hidden">
                       <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-400 dark:text-zinc-600">
                             {templates.find(t => t.id === note.template)?.icon && React.createElement(templates.find(t => t.id === note.template).icon, { className: "w-5 h-5" })}
                           </div>
-                          <span className="text-[10px] font-black text-zinc-300 uppercase">PAGE {originalIndex + 1}</span>
+                          <span className="text-[10px] font-black text-zinc-300 dark:text-zinc-700 uppercase">PAGE {originalIndex + 1}</span>
                         </div>
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                          <button onClick={() => { setCurrentIndex(originalIndex); setShowHistory(false); }} className="p-2 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-all"><Edit3 className="w-5 h-5" /></button>
-                          <button onClick={() => deleteNote(note.id)} className="p-2 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all"><Trash2 className="w-5 h-5" /></button>
+                          <button onClick={() => { setCurrentIndex(originalIndex); setShowHistory(false); }} className="p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl transition-all dark:text-zinc-500"><Edit3 className="w-5 h-5" /></button>
+                          <button onClick={() => deleteNote(note.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-xl transition-all dark:text-zinc-500"><Trash2 className="w-5 h-5" /></button>
                         </div>
                       </div>
-                      <div className="text-sm text-zinc-400 line-clamp-[10] italic flex-1" dangerouslySetInnerHTML={{ __html: note.content }} />
-                      <div className="mt-6 pt-6 border-t border-zinc-50 text-[10px] font-bold text-zinc-300 uppercase tracking-tighter">
+                      <div className="text-sm text-zinc-400 dark:text-zinc-500 line-clamp-[10] italic flex-1" dangerouslySetInnerHTML={{ __html: note.content }} />
+                      <div className="mt-6 pt-6 border-t border-zinc-50 dark:border-zen-dark-border text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase tracking-tighter">
                         {new Date(note.updatedAt).toLocaleDateString('th-TH')}
                       </div>
                     </div>
