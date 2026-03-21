@@ -258,15 +258,14 @@ const NotesView = ({ store }) => {
         const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${AI_CONFIG.FUNCTION_NAME}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ prompt })
         });
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Backend request failed');
+          throw new Error(errorData.message || errorData.error || 'Backend request failed');
         }
 
         const data = await response.json();

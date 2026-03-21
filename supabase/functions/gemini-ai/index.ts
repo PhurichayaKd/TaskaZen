@@ -6,35 +6,30 @@ const corsHeaders = {
 }
 
 serve(async (req: Request) => {
+  // 1. จัดการ CORS (ต้องทำเป็นอันดับแรก)
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const rawBody = await req.text();
+    // 2. อ่าน JSON โดยตรง (Deno จะจัดการ Stream ให้เอง)
+    const body = await req.json();
     
-    if (!rawBody) {
-      return new Response(JSON.stringify({ error: "Request body is empty" }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
+    if (!body || !body.prompt) {
+      throw new Error("Missing prompt in request body");
     }
 
-    const { prompt, systemInstruction, useJson } = JSON.parse(rawBody);
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    const { prompt, systemInstruction, useJson } = body;
 
+    // 3. ตรวจสอบ API Key
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     if (!GEMINI_API_KEY) {
-      return new Response(JSON.stringify({ 
-        error: "SERVER_ERROR: GEMINI_API_KEY is missing in Supabase Secrets",
-        details: "Please run: npx supabase secrets set GEMINI_API_KEY=your_key"
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      });
+      throw new Error("GEMINI_API_KEY is not set in Supabase Secrets");
     }
 
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
+    // 4. เรียกใช้ Gemini
     const geminiRes = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -48,15 +43,7 @@ serve(async (req: Request) => {
     const data = await geminiRes.json();
     
     if (data.error) {
-      // ส่ง Error จาก Google กลับไปให้ดูเลยว่าติดอะไร
-      return new Response(JSON.stringify({ 
-        error: "GOOGLE_AI_ERROR", 
-        message: data.error.message,
-        status: data.error.status 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      });
+      throw new Error(`Google AI Error: ${data.error.message}`);
     }
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
@@ -67,12 +54,13 @@ serve(async (req: Request) => {
     });
 
   } catch (error: any) {
+    console.error("Function Error:", error.message);
     return new Response(JSON.stringify({ 
-      error: "CRITICAL_ERROR", 
+      error: "SERVER_ERROR", 
       message: error.message 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
+      status: 500, // ส่ง 500 เพื่อให้เรารู้ว่าติดที่ catch block
     });
   }
 })
