@@ -315,38 +315,53 @@ const WorkspaceView = ({ store }) => {
             <span className="text-[10px] font-black text-indigo-500 uppercase">แลกเปลี่ยนรางวัลได้ที่นี่</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <RewardItem 
-              icon={Coins} label="เหรียญทองแดง" count={rewards.bronzeCoins} 
-              color="text-orange-600" bgColor="bg-orange-50" requirement="10 ถ้วย"
-              onClick={() => handleExchange('bronzeCoin', 'เหรียญทองแดง', Coins)}
-              disabled={rewards.trophies < 10 && rewards.bronzeCoins === 0}
-            />
-            <RewardItem 
-              icon={Coins} label="เหรียญเงิน" count={rewards.silverCoins} 
-              color="text-zinc-400" bgColor="bg-zinc-100" requirement="3 ทองแดง"
-              onClick={() => handleExchange('silverCoin', 'เหรียญเงิน', Coins)}
-              disabled={rewards.bronzeCoins < 3 && rewards.silverCoins === 0}
-            />
-            <RewardItem 
-              icon={Coins} label="เหรียญทอง" count={rewards.goldCoins} 
-              color="text-yellow-500" bgColor="bg-yellow-50" requirement="5 เงิน"
-              onClick={() => handleExchange('goldCoin', 'เหรียญทอง', Coins)}
-              disabled={rewards.silverCoins < 5 && rewards.goldCoins === 0}
-            />
-            <RewardItem 
-              icon={Shield} label="โล่ดาวเงิน" count={rewards.silverShields} 
-              color="text-indigo-400" bgColor="bg-indigo-50" requirement="7 ทอง"
-              onClick={() => handleExchange('silverShield', 'โล่ดาวสีเงิน', Shield, true)}
-              disabled={rewards.goldCoins < 7 && rewards.silverShields === 0}
-              isShield={true}
-            />
-            <RewardItem 
-              icon={Crown} label="มงกุฏทอง" count={rewards.goldCrowns} 
-              color="text-yellow-600" bgColor="bg-yellow-100" requirement="3 ดาวเงิน"
-              onClick={() => handleExchange('goldCrown', 'มงกุฏสีทอง', Crown)}
-              disabled={rewards.silverShields < 3 && rewards.goldCrowns === 0}
-            />
+          <div className="flex flex-col gap-4 items-center">
+            {/* Row 1: Bronze Coin */}
+            <div className="w-48">
+              <RewardItem 
+                icon={Coins} label="เหรียญทองแดง" count={rewards.bronzeCoins} 
+                color="text-orange-600" bgColor="bg-orange-50" requirement="10 ถ้วย"
+                onClick={() => handleExchange('bronzeCoin', 'เหรียญทองแดง', Coins)}
+                disabled={rewards.trophies < 10 && rewards.bronzeCoins === 0}
+              />
+            </div>
+            
+            {/* Row 2: Silver & Gold */}
+            <div className="grid grid-cols-2 gap-4 w-full">
+              <RewardItem 
+                icon={Coins} label="เหรียญเงิน" count={rewards.silverCoins} 
+                color="text-zinc-400" bgColor="bg-zinc-100" requirement="3 ทองแดง"
+                onClick={() => handleExchange('silverCoin', 'เหรียญเงิน', Coins)}
+                disabled={rewards.bronzeCoins < 3 && rewards.silverCoins === 0}
+              />
+              <RewardItem 
+                icon={Coins} label="เหรียญทอง" count={rewards.goldCoins} 
+                color="text-yellow-500" bgColor="bg-yellow-50" requirement="5 เงิน"
+                onClick={() => handleExchange('goldCoin', 'เหรียญทอง', Coins)}
+                disabled={rewards.silverCoins < 5 && rewards.goldCoins === 0}
+              />
+            </div>
+
+            {/* Row 3: Silver Star Shield */}
+            <div className="w-48">
+              <RewardItem 
+                icon={Shield} label="โล่ดาวเงิน" count={rewards.silverShields} 
+                color="text-indigo-400" bgColor="bg-indigo-50" requirement="7 ทอง"
+                onClick={() => handleExchange('silverShield', 'โล่ดาวสีเงิน', Shield, true)}
+                disabled={rewards.goldCoins < 7 && rewards.silverShields === 0}
+                isShield={true}
+              />
+            </div>
+
+            {/* Row 4: Gold Crown */}
+            <div className="w-48">
+              <RewardItem 
+                icon={Crown} label="มงกุฏทอง" count={rewards.goldCrowns} 
+                color="text-yellow-600" bgColor="bg-yellow-100" requirement="3 ดาวเงิน"
+                onClick={() => handleExchange('goldCrown', 'มงกุฏสีทอง', Crown)}
+                disabled={rewards.silverShields < 3 && rewards.goldCrowns === 0}
+              />
+            </div>
           </div>
         </div>
 

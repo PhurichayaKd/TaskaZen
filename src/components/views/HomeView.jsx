@@ -78,10 +78,10 @@ const HomeView = ({ store }) => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 mb-1">
-              <greeting.icon className={`w-5 h-5 ${greeting.color}`} /> 
-              <span className="text-zinc-500 font-medium">{greeting.text}</span>
+              <greeting.icon className={`w-6 h-6 ${greeting.color}`} /> 
+              <span className="text-zinc-500 font-bold text-lg">{greeting.text}</span>
             </motion.div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900">
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 mt-3">
               วันนี้, {new Intl.DateTimeFormat('th-TH', { day: 'numeric', month: 'long' }).format(new Date())}
             </h2>
           </div>

@@ -51,10 +51,10 @@ export default function App() {
   }, [viewMode, activeTab]);
 
   const menuItems = [
-    { id: 'home', label: 'หน้าแรก', icon: Home },
+    { id: 'home', label: 'Home', icon: Home },
     { id: 'calendar', label: 'Calendar', icon: CalendarIcon },
-    { id: 'workspace', label: 'พื้นที่ทำงาน', icon: LayoutDashboard },
-    { id: 'notes', label: 'จดบันทึก', icon: PenLine },
+    { id: 'workspace', label: 'Missions', icon: LayoutDashboard },
+    { id: 'notes', label: 'Notes', icon: PenLine },
   ];
 
   const currentTabTitle = menuItems.find(item => item.id === activeTab)?.label || 'TaskaZen';
@@ -106,7 +106,7 @@ export default function App() {
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1.5 custom-scrollbar">
           {isSidebarOpen && (
-             <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">เมนูหลัก</div>
+             <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Main Menu</div>
           )}
           {menuItems.map(item => (
             <button
@@ -139,7 +139,7 @@ export default function App() {
               {isSidebarOpen && (
                 <div className="ml-3 flex flex-col items-start truncate">
                   <span className="text-sm font-bold text-zinc-900">{session?.user?.user_metadata?.full_name || 'User'}</span>
-                  <span className="text-[10px] text-zinc-500 font-medium">Pro Plan ✨</span>
+                  <span className="text-[10px] text-zinc-500 font-medium">{session?.user?.email}</span>
                 </div>
               )}
            </button>
