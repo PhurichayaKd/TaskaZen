@@ -26,7 +26,10 @@ const NotesView = ({ store }) => {
   const [currentIndex, setCurrentIndex] = useState(notes.length - 1);
   const [showHistory, setShowHistory] = useState(false);
   const [historyFilter, setHistoryFilter] = useState('all');
-  const [aiSummary, setAiSummary] = useState('');
+  const [aiSummaries, setAiSummaries] = useState(() => {
+    const saved = localStorage.getItem('zen_ai_summaries');
+    return saved ? JSON.parse(saved) : {};
+  });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [direction, setDirection] = useState(0);
   const [saveStatus, setSaveStatus] = useState('saved');
@@ -43,7 +46,14 @@ const NotesView = ({ store }) => {
   const paperRef = useRef(null);
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  // Persist AI Summaries
+  useEffect(() => {
+    localStorage.setItem('zen_ai_summaries', JSON.stringify(aiSummaries));
+  }, [aiSummaries]);
+
   const currentNote = notes[currentIndex] || notes[0];
+  const currentAiSummary = currentNote ? aiSummaries[currentNote.id] : '';
 
   const filteredNotes = notes.filter(n => historyFilter === 'all' || n.template === historyFilter);
 
@@ -249,78 +259,55 @@ const NotesView = ({ store }) => {
     if (!text.trim()) return;
     
     setIsAnalyzing(true);
-    setAiSummary('');
     try {
       const prompt = `ช่วยสรุปเนื้อหาในโน้ตนี้ให้สั้น กระชับ และได้ใจความสำคัญ: "${text}"`;
-      
+      let generatedText = '';
+
       if (AI_CONFIG.USE_BACKEND) {
-        // Option A: Backend Call - Using Supabase SDK for better security and URL handling
+        // Option A: Backend Call
         const { data, error: invokeError } = await supabase.functions.invoke('gemini-ai', {
-          method: 'POST', // Explicitly specify POST
+          method: 'POST',
           body: { prompt }
         });
-
-        if (invokeError) {
-          console.error("AI Function Error:", invokeError);
-          throw new Error(invokeError.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ AI");
-        }
-
-        if (!data || !data.text) {
-          throw new Error("AI ไม่ได้ตอบกลับข้อมูลที่ต้องการ");
-        }
-
-        setAiSummary(data.text);
+        if (invokeError) throw new Error(invokeError.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ AI");
+        if (!data || !data.text) throw new Error("AI ไม่ได้ตอบกลับข้อมูลที่ต้องการ");
+        generatedText = data.text;
       } else {
-        // Option B: Direct Call (Frontend)
+        // Option B: Direct Call
         const apiKey = AI_CONFIG.GEMINI_API_KEY;
         if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-          setAiSummary('กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ');
-          setTimeout(() => setAiSummary(''), 4000);
+          setAiSummaries(prev => ({ ...prev, [currentNote.id]: 'กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ' }));
+          setTimeout(() => setAiSummaries(prev => ({ ...prev, [currentNote.id]: '' })), 4000);
           setIsAnalyzing(false);
           return;
         }
-        
         const url = getAiUrl();
-        console.log("Calling AI URL (Direct):", url.split('key=')[0] + 'key=HIDDEN'); // Log URL safely
-        
         const options = {
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            contents: [{ parts: [{ text: prompt }] }] 
-          })
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         };
-        
         const res = await fetchWithRetry(url, options);
-        if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
-          setAiSummary(res.candidates[0].content.parts[0].text);
-        }
+        generatedText = res.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      }
+
+      if (generatedText) {
+        setAiSummaries(prev => ({ ...prev, [currentNote.id]: generatedText }));
       }
     } catch (error) {
       console.error("AI Summarization Error:", error);
-      let errorMessage = error.message;
-      
-      try {
-        // Try to parse error message if it's a JSON string from API
-        if (errorMessage.includes('{')) {
-          const jsonStr = errorMessage.substring(errorMessage.indexOf('{'));
-          const errorObj = JSON.parse(jsonStr);
-          errorMessage = errorObj.error?.message || errorMessage;
-        }
-      } catch (e) {
-        // Fallback to original message
-      }
-
-      if (errorMessage.includes('404')) {
-        setAiSummary('ไม่พบ API Endpoint หรือ Model (404)');
-      } else if (errorMessage.includes('403') || errorMessage.includes('401')) {
-        setAiSummary('API Key ไม่ถูกต้อง หรือไม่มีสิทธิ์เข้าถึง (403/401)');
-      } else {
-        setAiSummary('เกิดข้อผิดพลาด: ' + (errorMessage.length > 50 ? errorMessage.substring(0, 50) + '...' : errorMessage));
-      }
+      setAiSummaries(prev => ({ ...prev, [currentNote.id]: 'เกิดข้อผิดพลาด: ' + error.message }));
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const removeAiSummary = () => {
+    setAiSummaries(prev => {
+      const next = { ...prev };
+      delete next[currentNote.id];
+      return next;
+    });
   };
 
   const colors = [
@@ -622,13 +609,17 @@ const NotesView = ({ store }) => {
                     </motion.div>
                   ))}
 
-                  {/* AI Summary Panel */}
+                  {/* AI Summary Panel - UPDATED to use persistent state */}
                   <AnimatePresence>
-                    {aiSummary && (
-                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="mt-8 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-3xl border border-indigo-100 dark:border-indigo-900/50 relative">
-                        <button onClick={() => setAiSummary('')} className="absolute top-4 right-4 text-indigo-300 dark:text-indigo-600 hover:text-indigo-500"><X className="w-5 h-5" /></button>
-                        <div className="flex items-center gap-2 mb-3 text-[10px] font-black uppercase text-indigo-500 dark:text-indigo-400"><Sparkles className="w-4 h-4" /> AI Summary</div>
-                        <p className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed italic">{aiSummary}</p>
+                    {currentAiSummary && (
+                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="mt-12 p-8 bg-gradient-to-br from-indigo-50/80 to-purple-50/80 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-[2rem] border-2 border-indigo-100 dark:border-indigo-800/50 relative shadow-inner">
+                        <button onClick={removeAiSummary} className="absolute top-6 right-6 p-2 rounded-full hover:bg-white dark:hover:bg-white/10 text-indigo-300 dark:text-indigo-600 hover:text-red-500 transition-all"><X className="w-5 h-5" /></button>
+                        <div className="flex items-center gap-2 mb-4 text-[10px] font-black uppercase text-indigo-500 dark:text-indigo-400 tracking-[0.2em]"><Sparkles className="w-5 h-5" /> AI Insight Summary</div>
+                        <p className="text-base text-indigo-900 dark:text-indigo-200 leading-relaxed italic font-medium">{currentAiSummary}</p>
+                        <div className="mt-6 pt-6 border-t border-indigo-100/50 dark:border-indigo-800/30 flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-indigo-300 dark:text-indigo-700 uppercase tracking-widest">Generated by TaskaZen AI</span>
+                          <Sparkles className="w-4 h-4 text-indigo-200 dark:text-indigo-800" />
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -638,14 +629,16 @@ const NotesView = ({ store }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {filteredNotes.map((note, index) => {
                   const originalIndex = notes.findIndex(n => n.id === note.id);
+                  const hasAi = !!aiSummaries[note.id];
                   return (
                     <div key={note.id} className="bg-white dark:bg-zen-dark-card p-8 rounded-3xl border border-zinc-200 dark:border-zen-dark-border shadow-sm hover:shadow-2xl transition-all group h-96 flex flex-col relative overflow-hidden">
+                      {hasAi && <div className="absolute top-0 right-0 p-2"><Sparkles className="w-4 h-4 text-indigo-400" /></div>}
                       <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-400 dark:text-zinc-600">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-400 dark:text-indigo-400">
                             {templates.find(t => t.id === note.template)?.icon && React.createElement(templates.find(t => t.id === note.template).icon, { className: "w-5 h-5" })}
                           </div>
-                          <span className="text-[10px] font-black text-zinc-300 dark:text-zinc-700 uppercase">PAGE {originalIndex + 1}</span>
+                          <span className="text-[10px] font-black text-zinc-300 dark:text-zinc-600 uppercase">PAGE {originalIndex + 1}</span>
                         </div>
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                           <button onClick={() => { setCurrentIndex(originalIndex); setShowHistory(false); }} className="p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl transition-all dark:text-zinc-500"><Edit3 className="w-5 h-5" /></button>
@@ -653,14 +646,16 @@ const NotesView = ({ store }) => {
                         </div>
                       </div>
                       <div className="text-sm text-zinc-400 dark:text-zinc-500 line-clamp-[10] italic flex-1" dangerouslySetInnerHTML={{ __html: note.content }} />
-                      <div className="mt-6 pt-6 border-t border-zinc-50 dark:border-zen-dark-border text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase tracking-tighter">
-                        {new Date(note.updatedAt).toLocaleDateString('th-TH')}
+                      <div className="mt-6 pt-6 border-t border-zinc-50 dark:border-zen-dark-border text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase tracking-tighter flex justify-between">
+                        <span>Created: {new Date(note.createdAt || note.timestamp).toLocaleDateString('th-TH')}</span>
+                        <span>Updated: {new Date(note.updatedAt || note.timestamp).toLocaleDateString('th-TH')}</span>
                       </div>
                     </div>
                   );
                 })}
               </motion.div>
             )}
+
           </AnimatePresence>
         </div>
       </div>

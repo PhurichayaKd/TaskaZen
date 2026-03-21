@@ -42,32 +42,48 @@ const FloatingTimer = ({ store, triggerAnimation }) => {
     <motion.div
       drag dragMomentum={false} dragControls={dragControls} dragListener={false}
       initial={{ opacity: 0, scale: 0.8, y: 50 }} animate={{ opacity: 1, scale: 1, y: 0 }}
-      className={`fixed bottom-8 right-8 z-50 w-72 rounded-2xl shadow-2xl border-2 backdrop-blur-md overflow-hidden
-        ${isNegative ? 'bg-red-50/90 border-red-500' : 'bg-white/90 border-purple-500'}
+      className={`fixed bottom-8 right-8 z-50 w-80 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-4 backdrop-blur-xl overflow-hidden transition-colors duration-500
+        ${isNegative ? 'bg-red-50/90 dark:bg-red-950/90 border-red-500' : 'bg-white/90 dark:bg-zinc-900/90 border-indigo-500'}
       `}
     >
       <div 
         onPointerDown={(e) => dragControls.start(e)}
-        className={`h-8 w-full cursor-grab active:cursor-grabbing flex justify-center items-center ${isNegative ? 'bg-red-500' : 'bg-purple-600'}`}
+        className={`h-10 w-full cursor-grab active:cursor-grabbing flex justify-center items-center relative overflow-hidden ${isNegative ? 'bg-red-500' : 'bg-gradient-to-r from-indigo-600 to-purple-600'}`}
       >
-        <div className="w-12 h-1.5 bg-white/40 rounded-full" />
+        <div className="absolute inset-0 bg-white/10 animate-pulse" />
+        <div className="w-16 h-1.5 bg-white/30 rounded-full relative z-10" />
       </div>
       
-      <div className="p-5 flex flex-col items-center text-center space-y-4">
-        <h4 className="font-bold text-zinc-900 leading-tight line-clamp-2">{activeTask.text}</h4>
+      <div className="p-8 flex flex-col items-center text-center space-y-6 relative">
+        {/* Gaming Style Mission Badge */}
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-lg z-20">
+          Mission Active
+        </div>
+
+        <div className="space-y-1">
+          <h4 className="font-black text-zinc-900 dark:text-white leading-tight text-xl tracking-tight uppercase">{activeTask.text}</h4>
+          <div className="flex items-center justify-center gap-2">
+            <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-md uppercase tracking-widest">
+              Reward: +{activeTask.expectedXp} XP
+            </span>
+          </div>
+        </div>
         
-        <div className={`text-4xl font-mono font-black tracking-tighter tabular-nums ${isNegative ? 'text-red-600 animate-pulse' : 'text-purple-600'}`}>
-          {formatTimer(activeTask.currentSeconds)}
+        <div className="relative group">
+          <div className={`absolute inset-0 blur-2xl opacity-20 ${isNegative ? 'bg-red-500' : 'bg-indigo-500'}`} />
+          <div className={`text-6xl font-mono font-black tracking-tighter tabular-nums relative z-10 ${isNegative ? 'text-red-600 animate-pulse' : 'text-zinc-900 dark:text-white drop-shadow-sm'}`}>
+            {formatTimer(activeTask.currentSeconds)}
+          </div>
         </div>
         
         {isNegative && (
-          <div className="flex items-center text-red-600 text-xs font-bold bg-red-100 px-3 py-1 rounded-full animate-bounce">
-            <AlertCircle className="w-3 h-3 mr-1" /> เกินเวลา! คะแนนกำลังติดลบ
-          </div>
+          <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="flex items-center text-red-600 dark:text-red-400 text-xs font-black bg-red-100 dark:bg-red-900/30 px-4 py-2 rounded-2xl border-2 border-red-200 dark:border-red-800">
+            <AlertCircle className="w-4 h-4 mr-2" /> OVERTIME PENALTY ACTIVE
+          </motion.div>
         )}
 
-        <Button onClick={handleComplete} className={`w-full font-bold text-base h-12 shadow-md ${isNegative ? 'bg-red-600 hover:bg-red-700' : 'bg-emerald-500 hover:bg-emerald-600'}`}>
-           <CheckCircle2 className="w-5 h-5 mr-2" /> สำเร็จแล้ว!
+        <Button onClick={handleComplete} className={`w-full font-black text-lg h-16 rounded-[1.5rem] shadow-xl transform transition-all active:scale-95 uppercase tracking-widest ${isNegative ? 'bg-red-600 hover:bg-red-700 shadow-red-200 dark:shadow-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200 dark:shadow-none text-white'}`}>
+           <CheckCircle2 className="w-6 h-6 mr-3 stroke-[3]" /> Finish Mission
         </Button>
       </div>
     </motion.div>

@@ -136,13 +136,13 @@ const CalendarView = ({ store, viewMode }) => {
                     className={`relative min-h-[80px] sm:min-h-[100px] p-2 sm:p-3 rounded-xl border transition-all cursor-pointer group flex flex-col ${_isToday ? 'bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800' : 'bg-white dark:bg-zen-dark-card border-zinc-100 dark:border-zen-dark-border hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-sm'} ${isActive ? 'ring-2 ring-indigo-600 ring-offset-1 sm:ring-offset-2 dark:ring-offset-zen-dark-bg border-transparent z-10' : ''}`}
                   >
                     <div className="flex justify-between items-start">
-                      <span className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 text-xs sm:text-sm font-semibold rounded-full ${_isToday ? 'bg-indigo-600 text-white shadow-md' : 'text-zinc-700 dark:text-zinc-300 group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800'} ${isActive && !_isToday ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' : ''}`}>
+                      <span className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 text-xs sm:text-sm font-semibold rounded-full ${_isToday ? 'bg-indigo-600 text-white shadow-md' : 'text-zinc-700 dark:text-zinc-200 group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800'} ${isActive && !_isToday ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' : ''}`}>
                         {date.getDate()}
                       </span>
                       {hasTasks && (
                         <div className="flex gap-0.5">
                           {Array.from(new Set(dayData.tasks.map(t => t.color || 'zinc'))).slice(0,3).map((c, i) => (
-                            <div key={i} className={`w-1.5 h-1.5 rounded-full ${colorMap[c].main}`} />
+                            <div key={i} className={`w-1.5 h-1.5 rounded-full ${colorMap[c].main} shadow-[0_0_4px_rgba(0,0,0,0.3)] dark:shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
                           ))}
                         </div>
                       )}

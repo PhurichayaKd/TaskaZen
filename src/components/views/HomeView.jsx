@@ -92,12 +92,12 @@ const HomeView = ({ store }) => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-bl-full -z-10 opacity-50" />
             <div className="relative w-20 h-20 flex-shrink-0">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r={circleRadius} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-zinc-100 dark:text-zinc-800" />
+                <circle cx="50" cy="50" r={circleRadius} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-zinc-100 dark:text-zinc-800/50" />
                 <motion.circle 
                   cx="50" cy="50" r={circleRadius} stroke="currentColor" strokeWidth="8" fill="transparent" 
                   strokeDasharray={circleCircumference} 
                   initial={{ strokeDashoffset: circleCircumference }} animate={{ strokeDashoffset: circleOffset }} transition={{ duration: 1, ease: "easeOut" }}
-                  strokeLinecap="round" className={`${progressPercent === 100 ? 'text-emerald-500' : 'text-indigo-600 dark:text-indigo-400'}`} 
+                  strokeLinecap="round" className={`${progressPercent === 100 ? 'text-emerald-500' : 'text-indigo-600 dark:text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.5)]'}`} 
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
