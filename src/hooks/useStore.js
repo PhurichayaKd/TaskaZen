@@ -12,10 +12,20 @@ export const useStore = (session) => {
   const [activeTimerId, setActiveTimerId] = useState(null);
 
   // Profile & Settings
-  const [profile, setProfile] = useState({
-    fullName: '',
-    theme: 'light'
+  const [profile, setProfile] = useState(() => {
+    const saved = localStorage.getItem('zen_profile');
+    return saved ? JSON.parse(saved) : { fullName: '', theme: 'light' };
   });
+
+  // Effect to apply theme immediately and persist profile
+  useEffect(() => {
+    if (profile.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('zen_profile', JSON.stringify(profile));
+  }, [profile]);
 
   // NEW Gamification State
   const [rewards, setRewards] = useState({
@@ -48,10 +58,12 @@ export const useStore = (session) => {
         .single();
       
       if (profileData) {
-        setProfile({
+        const supProfile = {
           fullName: profileData.full_name || session.user.user_metadata?.full_name || '',
           theme: profileData.theme || 'light'
-        });
+        };
+        setProfile(supProfile);
+        localStorage.setItem('zen_profile', JSON.stringify(supProfile));
         setRewards(prev => ({
           ...prev,
           trophies: profileData.trophies,
@@ -316,7 +328,9 @@ export const useStore = (session) => {
     if (updates.fullName !== undefined) dbUpdates.full_name = updates.fullName;
     if (updates.theme !== undefined) dbUpdates.theme = updates.theme;
     
-    setProfile(prev => ({ ...prev, ...updates }));
+    const newProfile = { ...profile, ...updates };
+    setProfile(newProfile);
+    localStorage.setItem('zen_profile', JSON.stringify(newProfile));
     
     await supabase
       .from('profiles')

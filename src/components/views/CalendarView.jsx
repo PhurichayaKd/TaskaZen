@@ -1,11 +1,83 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Eye, FileText, ListTree, CheckCircle2, Circle, Clock } from 'lucide-react';
 import Button from '../ui/Button';
 import { formatDateToString, isToday, isSameDay } from '../../utils/dateUtils';
 import { colorMap } from '../ui/constants';
 import DayPanel from '../overlays/DayPanel';
-import ReadOnlyViewPanel from '../overlays/ReadOnlyViewPanel';
+const ReadOnlyViewPanel = ({ date, data }) => {
+  const tasks = data?.tasks || [];
+  const notes = data?.notes || '';
+  const dateTitle = new Intl.DateTimeFormat('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+  
+  const completedTasks = tasks.filter(t => t.completed).length;
+  const progressPercent = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+
+  return (
+    <div className="h-full flex flex-col bg-white dark:bg-zen-dark-card">
+      <div className="pb-6 border-b border-zinc-100 dark:border-zen-dark-border">
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{dateTitle}</h3>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 flex items-center">
+          <Eye className="w-4 h-4 mr-1.5" /> โหมดอ่านอย่างเดียว
+        </p>
+        
+        <div className="mt-5 space-y-2">
+          <div className="flex justify-between items-end">
+            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">ความคืบหน้าของวัน</span>
+            <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{progressPercent}%</span>
+          </div>
+          <div className="w-full h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden border border-zinc-200/60 dark:border-zen-dark-border">
+            <div className="h-full rounded-full bg-indigo-500" style={{ width: `${progressPercent}%` }} />
+          </div>
+          <p className="text-[10px] text-zinc-400 dark:text-zinc-500 text-right">เสร็จ {completedTasks} จาก {tasks.length} งาน</p>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto pt-6 space-y-8 pr-2 custom-scrollbar">
+        {/* Notes View */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider flex items-center">
+            <FileText className="w-3.5 h-3.5 mr-2" /> บันทึกย่อ
+          </h4>
+          {notes ? (
+            <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zen-dark-border text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed italic">
+              {notes}
+            </div>
+          ) : (
+            <p className="text-sm text-zinc-300 dark:text-zinc-700 italic">ไม่มีบันทึกสำหรับวันนี้</p>
+          )}
+        </div>
+
+        {/* Tasks View */}
+        <div className="space-y-4 pb-8">
+          <h4 className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider flex items-center">
+            <ListTree className="w-3.5 h-3.5 mr-2" /> รายการงาน
+          </h4>
+          {tasks.length > 0 ? (
+            <div className="space-y-2.5">
+              {tasks.map(task => (
+                <div key={task.id} className="flex gap-3 p-3 bg-white dark:bg-zinc-900/30 rounded-xl border border-zinc-100 dark:border-zen-dark-border shadow-sm">
+                  {task.completed ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5" /> : <Circle className="w-4 h-4 text-zinc-200 dark:text-zinc-800 mt-0.5" />}
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-semibold dark:text-white ${task.completed ? 'text-zinc-400 line-through' : 'text-zinc-800'}`}>{task.text}</p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      {task.time && <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 flex items-center bg-zinc-50 dark:bg-zinc-900 px-1.5 py-0.5 rounded"><Clock className="w-2.5 h-2.5 mr-1" /> {task.time}</span>}
+                      <div className={`w-1.5 h-1.5 rounded-full ${colorMap[task.color || 'zinc'].main}`} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-zinc-50 dark:bg-zinc-900/30 rounded-xl border border-dashed border-zinc-200 dark:border-zen-dark-border">
+              <p className="text-sm text-zinc-400 dark:text-zinc-600">ไม่มีงานในวันนี้</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CalendarView = ({ store, viewMode }) => {
   const { currentDate, selectedDate, setSelectedDate, setMonth, setToday, dayDataMap, saveData } = store;

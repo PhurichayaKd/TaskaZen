@@ -283,11 +283,11 @@ const NotesView = ({ store }) => {
   ];
 
   const boxColors = [
-    { name: 'White', bg: 'bg-white' },
-    { name: 'Indigo', bg: 'bg-indigo-50' },
-    { name: 'Yellow', bg: 'bg-yellow-50' },
-    { name: 'Green', bg: 'bg-emerald-50' },
-    { name: 'Pink', bg: 'bg-pink-50' },
+    { name: 'White', bg: 'bg-white dark:bg-zinc-800' },
+    { name: 'Indigo', bg: 'bg-indigo-50 dark:bg-indigo-900/20' },
+    { name: 'Yellow', bg: 'bg-yellow-50 dark:bg-yellow-900/20' },
+    { name: 'Green', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+    { name: 'Pink', bg: 'bg-pink-50 dark:bg-pink-900/20' },
   ];
 
   const fontSizes = [12, 14, 16, 18, 20, 24, 32, 48, 64];
@@ -528,7 +528,7 @@ const NotesView = ({ store }) => {
                         e.stopPropagation(); 
                         toggleActiveBox(box.id);
                       }}
-                      className={`absolute p-5 ${box.color} dark:bg-zen-dark-card border-2 ${activeBoxId === box.id ? 'border-indigo-400 dark:border-indigo-500 shadow-2xl z-40' : 'border-dashed border-zinc-200 dark:border-zen-dark-border z-20'} rounded-3xl shadow-xl min-w-[220px] group/box cursor-grab transition-all duration-200`}
+                      className={`absolute p-5 ${box.color} border-2 ${activeBoxId === box.id ? 'border-indigo-400 dark:border-indigo-500 shadow-2xl z-40' : 'border-dashed border-zinc-200 dark:border-zen-dark-border z-20'} rounded-3xl shadow-xl min-w-[220px] group/box cursor-grab transition-all duration-200`}
                       style={{ left: box.x, top: box.y }}
                     >
                       <div 

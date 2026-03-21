@@ -94,13 +94,13 @@ export default function App() {
       <motion.aside
         initial={false}
         animate={{ width: isSidebarOpen ? 260 : 72 }}
-        className="bg-white border-r border-zinc-200 h-screen flex flex-col flex-shrink-0 relative overflow-hidden z-20 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
+        className="bg-white dark:bg-zen-dark-card border-r border-zinc-200 dark:border-zen-dark-border h-screen flex flex-col flex-shrink-0 relative overflow-hidden z-20 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
       >
-        <div className="h-16 flex items-center px-4 border-b border-zinc-100 shrink-0">
+        <div className="h-16 flex items-center px-4 border-b border-zinc-100 dark:border-zen-dark-border shrink-0">
           <div className={`flex items-center gap-3 ${!isSidebarOpen && 'justify-center w-full'}`}>
-            <div className="w-8 h-8 bg-indigo-50/50 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+            <div className="w-8 h-8 bg-indigo-50/50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
-              <FileText className="w-4 h-4 text-indigo-600 relative z-10" /> 
+              <FileText className="w-4 h-4 text-indigo-600 dark:text-indigo-400 relative z-10" /> 
             </div>
             {isSidebarOpen && (
               <motion.span 
@@ -116,7 +116,7 @@ export default function App() {
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1.5 custom-scrollbar">
           {isSidebarOpen && (
-             <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Main Menu</div>
+             <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Main Menu</div>
           )}
           {menuItems.map(item => (
             <button
@@ -124,12 +124,12 @@ export default function App() {
               onClick={() => setActiveTab(item.id)}
               className={`w-full flex items-center p-2.5 rounded-xl transition-all ${
                 activeTab === item.id 
-                  ? 'bg-indigo-50 text-indigo-700 font-semibold shadow-sm border border-indigo-100' 
-                  : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 border border-transparent'
+                  ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm border border-indigo-100 dark:border-indigo-800' 
+                  : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-200 border border-transparent'
               } ${!isSidebarOpen && 'justify-center'}`}
               title={!isSidebarOpen ? item.label : ''}
             >
-              <item.icon className={`w-5 h-5 flex-shrink-0 ${activeTab === item.id ? 'text-indigo-600' : 'text-zinc-400'}`} /> 
+              <item.icon className={`w-5 h-5 flex-shrink-0 ${activeTab === item.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'}`} /> 
               {isSidebarOpen && (
                 <span className="ml-3 truncate">{item.label}</span>
               )}
@@ -152,7 +152,7 @@ export default function App() {
               {isSidebarOpen && (
                 <div className="ml-3 flex flex-col items-start truncate text-left">
                   <span className="text-sm font-bold text-zinc-900 dark:text-white truncate w-full">{store.profile.fullName || 'User'}</span>
-                  <span className="text-[10px] text-zinc-500 dark:text-zinc-500 font-medium truncate w-full">{session?.user?.email}</span>
+                  <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium truncate w-full">{session?.user?.email}</span>
                 </div>
               )}
            </button>
