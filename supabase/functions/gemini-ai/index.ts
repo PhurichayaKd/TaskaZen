@@ -6,64 +6,33 @@ const corsHeaders = {
 }
 
 serve(async (req: Request) => {
-  // 1. Handle CORS
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    // 2. Only allow POST requests for processing
     if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ error: "Method not allowed. Please use POST." }), {
-        status: 405,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: corsHeaders });
     }
 
-    // 3. Parse Body Safely
-    const rawBody = await req.text();
-    if (!rawBody || rawBody.trim() === "") {
-      return new Response(JSON.stringify({ error: "Request body is empty" }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    let body;
-    try {
-      body = JSON.parse(rawBody);
-    } catch (e) {
-      return new Response(JSON.stringify({ error: "Invalid JSON format in body" }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
+    const body = await req.json();
     const { prompt, systemInstruction, useJson } = body;
-    if (!prompt) {
-      return new Response(JSON.stringify({ error: "Missing 'prompt' field" }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
     
-    // 4. Check API Key
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "GEMINI_API_KEY not found in server secrets" }), { 
+      console.error("Missing GEMINI_API_KEY");
+      return new Response(JSON.stringify({ error: "SERVER_ERROR: API Key is missing in Supabase Secrets" }), { 
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       });
     }
 
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-    // 5. Call Gemini
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
+        // แก้ไขจุดนี้: ใช้ system_instruction (snake_case)
+        system_instruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
         generationConfig: useJson ? { responseMimeType: "application/json" } : undefined
       })
     });
@@ -71,7 +40,11 @@ serve(async (req: Request) => {
     const data = await response.json();
     
     if (data.error) {
-      return new Response(JSON.stringify({ error: `Google AI Error: ${data.error.message}` }), { 
+      console.error("Google API Error:", data.error);
+      return new Response(JSON.stringify({ 
+        error: `GOOGLE_AI_ERROR: ${data.error.message}`,
+        code: data.error.status 
+      }), { 
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       });
     }
@@ -83,8 +56,8 @@ serve(async (req: Request) => {
     });
 
   } catch (err: any) {
-    console.error("Critical Error:", err.message);
-    return new Response(JSON.stringify({ error: `Server Runtime Error: ${err.message}` }), { 
+    console.error("Runtime Error:", err.message);
+    return new Response(JSON.stringify({ error: `RUNTIME_ERROR: ${err.message}` }), { 
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
     });
   }
