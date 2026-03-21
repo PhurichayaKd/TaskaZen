@@ -10,15 +10,16 @@ export default {
         sans: ['Inter', 'Sarabun', 'sans-serif'],
       },
       colors: {
-        'zen-cream': '#FFFDF5', // 60% Background
-        'zen-mint': '#E6F7F1',  // 30% Primary/UI
-        'zen-mint-dark': '#C1EBDD',
-        'zen-purple': '#F3E8FF', // 30% Alternative UI
-        'zen-purple-dark': '#E9D5FF',
-        'zen-peach': '#FFD8B1',  // 10% Accent/CTA
-        'zen-peach-dark': '#FFC28C',
-        'zen-blue': '#BAE6FD',   // 10% Alternative Accent
-        'zen-blue-dark': '#7DD3FC',
+        'zen-white': '#FFFFFF',
+        'zen-bg': '#F8FAFC',
+        'zen-blue': '#E0F2FE', // Sky Blue Pastel
+        'zen-blue-dark': '#0EA5E9', // Professional Blue
+        'zen-matcha': '#ECFCCB', // Matcha Green Pastel
+        'zen-matcha-dark': '#65A30D', // Professional Green
+        'zen-navy': '#1E3A8A', // Deep Navy
+        'zen-purple': '#F3E8FF', // Purple Pastel
+        'zen-purple-dark': '#9333EA', // Professional Purple
+        'zen-accent': '#3B82F6', // Action Color
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
