@@ -254,22 +254,20 @@ const NotesView = ({ store }) => {
       const prompt = `ช่วยสรุปเนื้อหาในโน้ตนี้ให้สั้น กระชับ และได้ใจความสำคัญ: "${text}"`;
       
       if (AI_CONFIG.USE_BACKEND) {
-        // Option A: Backend Call - Direct Fetch to URL for maximum reliability
-        const response = await fetch(`https://fblsriyebzlwgsgmdvkc.supabase.co/functions/v1/gemini-ai`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
-          },
-          body: JSON.stringify({ prompt })
+        // Option A: Backend Call - Using Supabase SDK for better security and URL handling
+        const { data, error: invokeError } = await supabase.functions.invoke('gemini-ai', {
+          body: { prompt }
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || errorData.error || `HTTP Error ${response.status}`);
+        if (invokeError) {
+          console.error("AI Function Error:", invokeError);
+          throw new Error(invokeError.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ AI");
         }
 
-        const data = await response.json();
+        if (!data || !data.text) {
+          throw new Error("AI ไม่ได้ตอบกลับข้อมูลที่ต้องการ");
+        }
+
         setAiSummary(data.text);
       } else {
         // Option B: Direct Call
