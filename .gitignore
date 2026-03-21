@@ -29,3 +29,7 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+# AI Config (Contains API Keys)
+src/utils/aiConfig.js
+
