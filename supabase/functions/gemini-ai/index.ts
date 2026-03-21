@@ -6,23 +6,30 @@ const corsHeaders = {
 }
 
 serve(async (req: Request) => {
+  // 1. จัดการ CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // 1. ตรวจสอบว่ามีข้อมูลส่งมาหรือไม่
-    const bodyText = await req.text();
-    if (!bodyText) {
-      throw new Error("Request body is empty");
+    // 2. อ่านข้อมูลจาก Body
+    const body = await req.json().catch(() => null);
+    
+    if (!body || !body.prompt) {
+      return new Response(JSON.stringify({ error: "กรุณาส่ง prompt มาด้วยครับ" }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      });
     }
 
-    const { prompt, systemInstruction, useJson } = JSON.parse(bodyText);
-    
-    // 2. ตรวจสอบ API Key
+    const { prompt, systemInstruction, useJson } = body;
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+
     if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY is not set in Supabase Secrets");
+      return new Response(JSON.stringify({ error: "ยังไม่ได้ตั้งค่า GEMINI_API_KEY ใน Supabase" }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      });
     }
 
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -38,14 +45,7 @@ serve(async (req: Request) => {
     });
 
     const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(`Google AI Error: ${data.error.message}`);
-    }
-
-    if (!data.candidates || data.candidates.length === 0) {
-      throw new Error("No response from AI candidates");
-    }
+    if (data.error) throw new Error(data.error.message);
 
     const text = data.candidates[0].content.parts[0].text;
 
@@ -55,10 +55,9 @@ serve(async (req: Request) => {
     });
 
   } catch (error: any) {
-    console.error("Function Error:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
+      status: 500,
     });
   }
 })
