@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../utils/supabaseClient';
 import { 
   FileText, LogIn, Loader2, Sparkles, LayoutDashboard, 
-  Calendar, PenLine, Trophy, Target, Zap, Clock, Shield 
+  Calendar, PenLine, Trophy, Target, Zap, Clock, Shield,
+  Mail, Gamepad2
 } from 'lucide-react';
 import Button from '../ui/Button';
 
@@ -88,34 +89,6 @@ const FeatureSlider = () => {
           </motion.div>
         </motion.div>
       </AnimatePresence>
-
-      {/* Background Floating Icons */}
-      <div className="absolute inset-0 pointer-events-none opacity-10 overflow-hidden">
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ 
-              x: Math.random() * 100 + "%", 
-              y: "110%", 
-              rotate: 0,
-              scale: Math.random() * 0.5 + 0.5
-            }}
-            animate={{ 
-              y: "-10%", 
-              rotate: 360,
-            }}
-            transition={{ 
-              duration: Math.random() * 20 + 20, 
-              repeat: Infinity, 
-              ease: "linear",
-              delay: Math.random() * 20
-            }}
-            className="absolute text-white"
-          >
-            <Sparkles className="w-12 h-12" />
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
 };
@@ -150,6 +123,41 @@ const LoginView = () => {
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
            <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-indigo-50 rounded-full blur-[100px] opacity-60" />
            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-50 rounded-full blur-[100px] opacity-60" />
+           
+           {/* Floating Pastel Icons Background */}
+           <div className="absolute inset-0 opacity-40">
+             {[...Array(15)].map((_, i) => {
+               const icons = [Mail, FileText, Gamepad2, Trophy, Sparkles];
+               const colors = ['text-blue-200', 'text-purple-200', 'text-pink-200', 'text-amber-200', 'text-emerald-200'];
+               const Icon = icons[i % icons.length];
+               const color = colors[i % colors.length];
+               return (
+                 <motion.div
+                   key={i}
+                   initial={{ 
+                     x: Math.random() * 100 + "%", 
+                     y: Math.random() * 100 + "%", 
+                     opacity: 0,
+                     scale: 0.5
+                   }}
+                   animate={{ 
+                     y: [null, Math.random() * 100 + "%"],
+                     opacity: [0.3, 0.6, 0.3],
+                     scale: [0.8, 1.2, 0.8],
+                     rotate: [0, 180, 360]
+                   }}
+                   transition={{ 
+                     duration: Math.random() * 20 + 20, 
+                     repeat: Infinity, 
+                     ease: "linear"
+                   }}
+                   className={`absolute ${color}`}
+                 >
+                   <Icon className="w-12 h-12" />
+                 </motion.div>
+               );
+             })}
+           </div>
         </div>
 
         <nav className="relative z-10 flex items-center justify-between mb-auto">
@@ -185,13 +193,13 @@ const LoginView = () => {
               <button 
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                className="w-full h-16 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] group relative overflow-hidden shadow-xl shadow-zinc-200"
+                className="w-full h-16 bg-white border-2 border-zinc-100 hover:border-indigo-100 text-zinc-900 rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] group relative overflow-hidden shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] hover:-translate-y-0.5"
               >
                 {isLoading ? (
-                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
                 ) : (
                   <>
-                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-zinc-50 rounded-lg flex items-center justify-center shadow-inner group-hover:bg-white transition-colors">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
