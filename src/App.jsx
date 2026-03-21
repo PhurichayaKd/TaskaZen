@@ -173,7 +173,7 @@ export default function App() {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
         
         {/* Header */}
-        <header className="bg-white/80 dark:bg-zen-dark-bg/80 backdrop-blur-md border-b border-zinc-200 dark:border-zen-dark-border h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 sticky top-0">
+        <header className="bg-white dark:bg-zen-dark-card border-b border-zinc-200 dark:border-zen-dark-border h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 sticky top-0">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)} 

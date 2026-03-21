@@ -169,7 +169,7 @@ const LoginView = () => {
             <span className="text-2xl font-black tracking-tight text-zinc-900">TaskaZen</span>
           </div>
           <div className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-2 border-zinc-50 px-3 py-1 rounded-full">
-            <Sparkles className="w-3 h-3 text-amber-400" /> V2.0 PRODUCTION
+            V2.0 PRODUCTION
           </div>
         </nav>
 
