@@ -209,7 +209,26 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
             contents: [{ parts: [{ text: notes }] }],
             system_instruction: { parts: [{ text: systemPrompt }] },
             generationConfig: {
-              responseMimeType: "application/json"
+              responseMimeType: "application/json",
+              responseSchema: {
+                type: "OBJECT",
+                properties: {
+                  tasks: { 
+                    type: "ARRAY", 
+                    items: { 
+                      type: "OBJECT", 
+                      properties: { 
+                        text: { type: "STRING" }, 
+                        time: { type: "STRING" }, 
+                        priority: { type: "STRING" }, 
+                        difficulty: { type: "STRING" }, 
+                        level: { type: "STRING" }, 
+                        color: { type: "STRING" } 
+                      }
+                    } 
+                  }
+                }
+              }
             }
           })
         };

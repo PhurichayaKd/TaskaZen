@@ -271,7 +271,7 @@ const NotesView = ({ store }) => {
 
         setAiSummary(data.text);
       } else {
-        // Option B: Direct Call
+        // Option B: Direct Call (Frontend)
         const apiKey = AI_CONFIG.GEMINI_API_KEY;
         if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
           setAiSummary('กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ');
@@ -282,10 +282,15 @@ const NotesView = ({ store }) => {
         
         const url = getAiUrl();
         console.log("Calling AI URL (Direct):", url.split('key=')[0] + 'key=HIDDEN'); // Log URL safely
+        
         const options = {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            contents: [{ parts: [{ text: prompt }] }] 
+          })
         };
+        
         const res = await fetchWithRetry(url, options);
         if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
           setAiSummary(res.candidates[0].content.parts[0].text);
