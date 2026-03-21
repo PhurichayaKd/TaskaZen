@@ -272,7 +272,7 @@ const NotesView = ({ store }) => {
         setAiSummary(data.text);
       } else {
         // Option B: Direct Call
-        const apiKey = AI_CONFIG.GEMINI_API_KEY || DIRECT_KEY;
+        const apiKey = AI_CONFIG.GEMINI_API_KEY;
         if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
           setAiSummary('กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ');
           setTimeout(() => setAiSummary(''), 4000);

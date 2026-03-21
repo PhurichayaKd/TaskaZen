@@ -192,7 +192,7 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
         generatedText = data.text;
       } else {
         // Option B: Direct Client Call (Frontend - Less Secure)
-        const apiKey = AI_CONFIG.GEMINI_API_KEY || DIRECT_KEY;
+        const apiKey = AI_CONFIG.GEMINI_API_KEY;
         if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
           setAiMessage('กรุณาใส่ API Key ในไฟล์ src/utils/aiConfig.js ก่อนครับ');
           setTimeout(() => setAiMessage(''), 4000);
@@ -206,14 +206,14 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: notes }] }],
-            systemInstruction: { parts: [{ text: systemPrompt }] },
+            system_instruction: { parts: [{ text: systemPrompt }] },
             generationConfig: {
               responseMimeType: "application/json"
             }
           })
         };
         const res = await fetchWithRetry(url, options);
-        generatedText = res.candidates[0].content.parts[0].text;
+        generatedText = res.candidates?.[0]?.content?.parts?.[0]?.text || "";
       }
       
       if (generatedText) {
