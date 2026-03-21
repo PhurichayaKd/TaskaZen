@@ -160,8 +160,16 @@ const WorkspaceView = ({ store }) => {
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform -rotate-3 hover:rotate-0 transition-transform">
-                <Gamepad2 className="w-8 h-8 text-white" /> 
+              <div className="relative group">
+                {/* Multi-layered glow/shadow for dimension */}
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity" />
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(79,70,229,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/20 dark:border-white/10 relative z-10 transform -rotate-3 hover:rotate-0 transition-all duration-300 overflow-hidden">
+                   {/* Inner shine */}
+                   <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+                   {/* Inner shadow */}
+                   <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),inset_0_-2px_4px_rgba(0,0,0,0.2)]" />
+                   <Gamepad2 className="w-8 h-8 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" /> 
+                </div>
               </div>
               <div>
                 <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight uppercase leading-none mb-1">Missions</h2>

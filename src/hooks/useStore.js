@@ -58,10 +58,14 @@ export const useStore = (session) => {
         .single();
       
       if (profileData) {
+        // Only update if we have meaningful data from Supabase
+        // Otherwise keep the one from localStorage (already in state)
         const supProfile = {
-          fullName: profileData.full_name || session.user.user_metadata?.full_name || '',
-          theme: profileData.theme || 'light'
+          fullName: profileData.full_name || profile.fullName || session.user.user_metadata?.full_name || '',
+          theme: profileData.theme || profile.theme || 'light'
         };
+        
+        // Update state and localStorage
         setProfile(supProfile);
         localStorage.setItem('zen_profile', JSON.stringify(supProfile));
         setRewards(prev => ({
