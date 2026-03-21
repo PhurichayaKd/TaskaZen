@@ -239,18 +239,23 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
       if (generatedText) {
         const parsed = JSON.parse(generatedText);
         if (parsed.tasks && parsed.tasks.length > 0) {
-          const newTasks = parsed.tasks.map(t => ({
-            ...t,
-            id: Date.now().toString() + Math.random().toString(),
-            time: t.time || '',
-            priority: t.priority || 'medium',
-            difficulty: t.difficulty || 'medium',
-            level: t.level || '1',
-            color: t.color || 'zinc',
-            category: category, 
-            completed: false,
-            subtasks: []
-          }));
+          const newTasks = parsed.tasks.map(t => {
+            // Validate color: ensure it exists in colorMap, otherwise fallback to zinc
+            const validatedColor = colorMap[t.color] ? t.color : 'zinc';
+            
+            return {
+              ...t,
+              id: Date.now().toString() + Math.random().toString(),
+              time: t.time || '',
+              priority: t.priority || 'medium',
+              difficulty: t.difficulty || 'medium',
+              level: t.level || '1',
+              color: validatedColor,
+              category: category, 
+              completed: false,
+              subtasks: []
+            };
+          });
           setTasks(prev => [...prev, ...newTasks]);
           setAiMessage('✨ สกัดงานและประเมินระดับสำเร็จ!');
         } else {

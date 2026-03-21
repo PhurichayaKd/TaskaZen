@@ -2,7 +2,7 @@
 // Switch between Backend (Supabase Edge Function) and Direct (Frontend) call
 export const AI_CONFIG = {
   USE_BACKEND: false, // Set to false to use direct Gemini API call from frontend
-  MODEL_NAME: "gemini-2.5-flash", 
+  MODEL_NAME: "gemini-1.5-flash", // กลับมาใช้ Flash ที่ฉลาดและเร็วที่สุด
   GEMINI_API_KEY: "AIzaSyC2h4b4UzszpHn4nb25dRjHGC3LWRJXCeY", // ใส่ API Key ของคุณที่นี่
 };
 
