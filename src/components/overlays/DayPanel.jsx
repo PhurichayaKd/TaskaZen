@@ -170,24 +170,26 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
       let generatedText = '';
 
       if (AI_CONFIG.USE_BACKEND) {
-        // Option A: Use Supabase Edge Functions (Backend)
-        const { data, error: invokeError } = await supabase.functions.invoke(AI_CONFIG.FUNCTION_NAME, {
-          body: { 
+        // Option A: Backend Call - Direct Fetch to URL for maximum reliability
+        const response = await fetch(`https://fblsriyebzlwgsgmdvkc.supabase.co/functions/v1/gemini-ai`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+          },
+          body: JSON.stringify({ 
             prompt: notes,
             systemInstruction: systemPrompt,
             useJson: true 
-          }
+          })
         });
 
-        if (invokeError) {
-          console.error('AI Invoke Error:', invokeError);
-          throw new Error(invokeError.message || 'AI Service Error');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || errorData.error || `HTTP Error ${response.status}`);
         }
 
-        if (!data || !data.text) {
-          throw new Error('AI returned an empty response');
-        }
-
+        const data = await response.json();
         generatedText = data.text;
       } else {
         // Option B: Direct Client Call (Frontend - Less Secure)
