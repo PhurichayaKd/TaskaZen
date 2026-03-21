@@ -131,27 +131,28 @@ const LoginView = () => {
                const colors = ['text-blue-200', 'text-purple-200', 'text-pink-200', 'text-amber-200', 'text-emerald-200'];
                const Icon = icons[i % icons.length];
                const color = colors[i % colors.length];
+               
+               // Generate random initial positions
+               const left = (i * 7 + Math.random() * 20) % 100;
+               const top = (i * 13 + Math.random() * 20) % 100;
+               
                return (
                  <motion.div
                    key={i}
-                   initial={{ 
-                     x: Math.random() * 100 + "%", 
-                     y: Math.random() * 100 + "%", 
-                     opacity: 0,
-                     scale: 0.5
-                   }}
+                   initial={{ opacity: 0, scale: 0.5 }}
                    animate={{ 
-                     y: [null, Math.random() * 100 + "%"],
+                     y: [0, -30, 0],
                      opacity: [0.3, 0.6, 0.3],
-                     scale: [0.8, 1.2, 0.8],
+                     scale: [0.8, 1.1, 0.8],
                      rotate: [0, 180, 360]
                    }}
                    transition={{ 
-                     duration: Math.random() * 20 + 20, 
+                     duration: Math.random() * 10 + 15, 
                      repeat: Infinity, 
                      ease: "linear"
                    }}
                    className={`absolute ${color}`}
+                   style={{ left: `${left}%`, top: `${top}%` }}
                  >
                    <Icon className="w-12 h-12" />
                  </motion.div>
