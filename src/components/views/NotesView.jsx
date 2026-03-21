@@ -511,7 +511,7 @@ const NotesView = ({ store }) => {
               <div className="absolute top-full right-0 mt-3 w-72 bg-white dark:bg-zen-dark-card border border-zinc-200 dark:border-zen-dark-border rounded-3xl shadow-2xl p-4 z-50 grid grid-cols-1 gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
                 {templates.map(t => (
                   <button key={t.id} onMouseDown={(e) => { e.preventDefault(); handleAddPage(t.id); }} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 text-left group transition-all border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/50">
-                    <div className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-zen-dark-card group-hover:text-indigo-600 dark:group-hover:text-indigo-400 shadow-sm group-hover:shadow transition-all"><t.icon className="w-6 h-6" /></div>
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-700 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-zen-dark-card group-hover:text-indigo-600 dark:group-hover:text-indigo-400 shadow-sm group-hover:shadow transition-all"><t.icon className="w-6 h-6" /></div>
                     <div><p className="text-sm font-black text-zinc-800 dark:text-zinc-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-300">{t.label}</p><p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium group-hover:text-indigo-400 dark:group-hover:text-indigo-500">{t.desc}</p></div>
                   </button>
                 ))}
@@ -640,15 +640,15 @@ const NotesView = ({ store }) => {
                           </div>
                           <span className="text-[10px] font-black text-zinc-300 dark:text-zinc-600 uppercase">PAGE {originalIndex + 1}</span>
                         </div>
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all mr-2">
                           <button onClick={() => { setCurrentIndex(originalIndex); setShowHistory(false); }} className="p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl transition-all dark:text-zinc-500"><Edit3 className="w-5 h-5" /></button>
                           <button onClick={() => deleteNote(note.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-xl transition-all dark:text-zinc-500"><Trash2 className="w-5 h-5" /></button>
                         </div>
                       </div>
                       <div className="text-sm text-zinc-400 dark:text-zinc-500 line-clamp-[10] italic flex-1" dangerouslySetInnerHTML={{ __html: note.content }} />
                       <div className="mt-6 pt-6 border-t border-zinc-50 dark:border-zen-dark-border text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase tracking-tighter flex justify-between">
-                        <span>Created: {new Date(note.createdAt || note.timestamp).toLocaleDateString('th-TH')}</span>
-                        <span>Updated: {new Date(note.updatedAt || note.timestamp).toLocaleDateString('th-TH')}</span>
+                        <span>Created: {new Date(note.created_at || note.createdAt || note.timestamp).toLocaleDateString('th-TH')}</span>
+                        <span>Updated: {new Date(note.updated_at || note.updatedAt || note.timestamp).toLocaleDateString('th-TH')}</span>
                       </div>
                     </div>
                   );

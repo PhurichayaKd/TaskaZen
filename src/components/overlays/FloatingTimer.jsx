@@ -42,9 +42,10 @@ const FloatingTimer = ({ store, triggerAnimation }) => {
     <motion.div
       drag dragMomentum={false} dragControls={dragControls} dragListener={false}
       initial={{ opacity: 0, scale: 0.8, y: 50 }} animate={{ opacity: 1, scale: 1, y: 0 }}
-      className={`fixed bottom-8 right-8 z-50 w-80 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-4 backdrop-blur-xl overflow-hidden transition-colors duration-500
-        ${isNegative ? 'bg-red-50/90 dark:bg-red-950/90 border-red-500' : 'bg-white/90 dark:bg-zinc-900/90 border-indigo-500'}
+      className={`fixed bottom-8 right-8 z-50 min-w-[320px] rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-4 backdrop-blur-xl overflow-auto transition-colors duration-500 resize both
+        ${isNegative ? 'bg-red-50/90 dark:bg-red-950/90 border-red-500' : 'bg-white/90 dark:bg-zinc-800/90 border-indigo-500'}
       `}
+      style={{ minHeight: '300px' }}
     >
       <div 
         onPointerDown={(e) => dragControls.start(e)}
@@ -54,10 +55,10 @@ const FloatingTimer = ({ store, triggerAnimation }) => {
         <div className="w-16 h-1.5 bg-white/30 rounded-full relative z-10" />
       </div>
       
-      <div className="p-8 flex flex-col items-center text-center space-y-6 relative">
+      <div className="p-8 flex flex-col items-center text-center space-y-6 relative h-full">
         {/* Gaming Style Mission Badge */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-lg z-20">
-          Mission Active
+        <div className="px-4 py-1 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-lg z-20">
+          ACTIVE
         </div>
 
         <div className="space-y-1">

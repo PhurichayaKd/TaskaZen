@@ -57,7 +57,7 @@ const ReadOnlyViewPanel = ({ date, data }) => {
             <div className="space-y-2.5">
               {tasks.map(task => (
                 <div key={task.id} className="flex gap-3 p-3 bg-white dark:bg-zinc-900/30 rounded-xl border border-zinc-100 dark:border-zen-dark-border shadow-sm">
-                  {task.completed ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5" /> : <Circle className="w-4 h-4 text-zinc-200 dark:text-zinc-800 mt-0.5" />}
+                  {task.completed ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5" /> : <Circle className="w-4 h-4 text-zinc-200 dark:text-zinc-500 mt-0.5" />}
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-semibold dark:text-white ${task.completed ? 'text-zinc-400 line-through' : 'text-zinc-800'}`}>{task.text}</p>
                     <div className="flex items-center gap-2 mt-1.5">

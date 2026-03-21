@@ -98,15 +98,15 @@ export default function App() {
       >
         <div className="h-16 flex items-center px-4 border-b border-zinc-100 dark:border-zen-dark-border shrink-0">
           <div className={`flex items-center gap-3 ${!isSidebarOpen && 'justify-center w-full'}`}>
-            <div className="w-8 h-8 bg-indigo-50/50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+            <div className="w-10 h-10 bg-indigo-50/50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
-              <FileText className="w-4 h-4 text-indigo-600 dark:text-indigo-400 relative z-10" /> 
+              <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400 relative z-10" /> 
             </div>
             {isSidebarOpen && (
               <motion.span 
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }} 
-                className="text-lg font-bold tracking-tight whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-indigo-600 bg-[length:200%_auto] animate-shimmer"
+                className="text-xl font-bold tracking-tight whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-indigo-600 bg-[length:200%_auto] animate-shimmer"
               >
                 TaskaZen
               </motion.span>
