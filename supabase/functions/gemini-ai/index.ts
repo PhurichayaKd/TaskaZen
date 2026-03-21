@@ -6,48 +6,28 @@ const corsHeaders = {
 }
 
 serve(async (req: Request) => {
-  // 1. Handle CORS Preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // 2. Parse Body safely - Using req.text() first for debugging
     const rawBody = await req.text();
-    console.log("Raw request body:", rawBody);
-
-    if (!rawBody || rawBody.trim() === "") {
+    
+    if (!rawBody) {
       return new Response(JSON.stringify({ error: "Request body is empty" }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400
       });
     }
 
-    let body;
-    try {
-      body = JSON.parse(rawBody);
-    } catch (e) {
-      console.error("JSON parse error:", e.message);
-      return new Response(JSON.stringify({ error: "Invalid JSON format" }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
-    }
-
-    const { prompt, systemInstruction, useJson } = body;
-    
-    if (!prompt) {
-      return new Response(JSON.stringify({ error: "No prompt provided in JSON" }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
-    }
-
-    // 3. Get API Key
+    const { prompt, systemInstruction, useJson } = JSON.parse(rawBody);
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+
     if (!GEMINI_API_KEY) {
-      console.error("GEMINI_API_KEY missing from secrets");
-      return new Response(JSON.stringify({ error: "GEMINI_API_KEY not set in Supabase Secrets" }), {
+      return new Response(JSON.stringify({ 
+        error: "SERVER_ERROR: GEMINI_API_KEY is missing in Supabase Secrets",
+        details: "Please run: npx supabase secrets set GEMINI_API_KEY=your_key"
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       });
@@ -55,7 +35,6 @@ serve(async (req: Request) => {
 
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    // 4. Call Gemini
     const geminiRes = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -69,8 +48,12 @@ serve(async (req: Request) => {
     const data = await geminiRes.json();
     
     if (data.error) {
-      console.error("Gemini API Error:", data.error);
-      return new Response(JSON.stringify({ error: data.error.message }), {
+      // ส่ง Error จาก Google กลับไปให้ดูเลยว่าติดอะไร
+      return new Response(JSON.stringify({ 
+        error: "GOOGLE_AI_ERROR", 
+        message: data.error.message,
+        status: data.error.status 
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       });
@@ -84,8 +67,10 @@ serve(async (req: Request) => {
     });
 
   } catch (error: any) {
-    console.error("Critical Function Error:", error);
-    return new Response(JSON.stringify({ error: error.message || "Internal Server Error" }), {
+    return new Response(JSON.stringify({ 
+      error: "CRITICAL_ERROR", 
+      message: error.message 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     });
