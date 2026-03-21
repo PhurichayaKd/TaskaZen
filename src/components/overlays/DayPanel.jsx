@@ -238,7 +238,14 @@ const DayPanel = ({ isOpen, onClose, date, initialData, onSave, store }) => {
         }
       }
     } catch (error) {
-      setAiMessage('เกิดข้อผิดพลาดในการเชื่อมต่อ AI');
+      console.error("AI Generation Error:", error);
+      if (error.message.includes('404')) {
+        setAiMessage('ไม่พบ API Endpoint หรือ Model (404)');
+      } else if (error.message.includes('403') || error.message.includes('401')) {
+        setAiMessage('API Key ไม่ถูกต้อง หรือไม่มีสิทธิ์เข้าถึง (403/401)');
+      } else {
+        setAiMessage('เกิดข้อผิดพลาดในการเชื่อมต่อ AI: ' + error.message);
+      }
     } finally {
       setIsGeneratingTasks(false);
       setTimeout(() => setAiMessage(''), 4000);

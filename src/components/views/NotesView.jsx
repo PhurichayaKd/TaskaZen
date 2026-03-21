@@ -291,7 +291,14 @@ const NotesView = ({ store }) => {
         }
       }
     } catch (error) {
-      setAiSummary('เกิดข้อผิดพลาดในการเชื่อมต่อ AI');
+      console.error("AI Summarization Error:", error);
+      if (error.message.includes('404')) {
+        setAiSummary('ไม่พบ API Endpoint หรือ Model (404)');
+      } else if (error.message.includes('403') || error.message.includes('401')) {
+        setAiSummary('API Key ไม่ถูกต้อง หรือไม่มีสิทธิ์เข้าถึง (403/401)');
+      } else {
+        setAiSummary('เกิดข้อผิดพลาดในการเชื่อมต่อ AI: ' + error.message);
+      }
     } finally {
       setIsAnalyzing(false);
     }
