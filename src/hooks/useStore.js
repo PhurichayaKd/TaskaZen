@@ -153,7 +153,15 @@ export const useStore = (session) => {
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
       
-      if (wsTasks) setWorkspaceTasks(wsTasks);
+      if (wsTasks) {
+        setWorkspaceTasks(wsTasks.map(t => ({
+          ...t,
+          totalSeconds: t.total_seconds,
+          currentSeconds: t.current_seconds,
+          expectedXp: t.expected_xp,
+          xpEarned: t.xp_earned
+        })));
+      }
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -395,7 +403,8 @@ export const useStore = (session) => {
         ...data,
         totalSeconds: data.total_seconds,
         currentSeconds: data.current_seconds,
-        expectedXp: data.expected_xp
+        expectedXp: data.expected_xp,
+        xpEarned: data.xp_earned || 0
       };
       setWorkspaceTasks(prev => [uiTask, ...prev]);
       return uiTask.id;
