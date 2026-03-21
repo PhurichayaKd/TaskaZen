@@ -299,129 +299,125 @@ const NotesView = ({ store }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-zen-bg relative overflow-hidden font-sans">
+    <div className="flex-1 flex flex-col h-full bg-zinc-50 relative overflow-hidden font-sans">
       
       {/* Top Toolbar */}
-      <div className="h-24 border-b border-zinc-100 bg-white/80 backdrop-blur-md flex items-center justify-between px-10 shrink-0 z-30 shadow-sm">
-        <div className="flex items-center gap-4">
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowHistory(!showHistory)} 
-            className={`h-12 px-6 rounded-2xl flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.3em] transition-all ${showHistory ? 'bg-zen-navy text-white shadow-2xl' : 'bg-white text-zinc-400 hover:bg-zinc-50 border border-zinc-100 shadow-sm'}`}
-          >
-            <History className="w-4 h-4" /> Timeline
-          </motion.button>
+      <div className="h-16 border-b border-zinc-200 bg-white flex items-center justify-between px-6 shrink-0 z-30 shadow-sm">
+        <div className="flex items-center gap-1">
+          <Button variant={showHistory ? 'primary' : 'ghost'} size="sm" onClick={() => setShowHistory(!showHistory)} className="h-9 gap-2">
+            <History className="w-4 h-4" /> ดูย้อนหลัง
+          </Button>
           
           {showHistory && (
-            <div className="flex bg-zinc-50 p-1.5 rounded-2xl border border-zinc-100 ml-4 shadow-inner">
+            <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 ml-4">
               {['all', ...templates.map(t => t.id)].map(filter => (
                 <button 
                   key={filter} 
                   onClick={() => setHistoryFilter(filter)}
-                  className={`px-5 py-2.5 text-[9px] font-black uppercase rounded-xl transition-all ${historyFilter === filter ? 'bg-white text-zen-navy shadow-lg border border-zinc-100' : 'text-zinc-400 hover:text-zinc-600'}`}
+                  className={`px-3 py-1.5 text-[10px] font-black uppercase rounded-lg transition-all ${historyFilter === filter ? 'bg-white text-indigo-600 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'}`}
                 >
                   {filter}
                 </button>
               ))}
             </div>
           )}
-          <div className="h-10 w-px bg-zinc-100 mx-4" />
+          <div className="h-6 w-px bg-zinc-200 mx-2" />
           
           {!showHistory && (
-              <div className="flex items-center gap-2">
-                <button onMouseDown={(e) => { e.preventDefault(); execCommand('bold'); }} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Bold"><Bold className="w-4 h-4" /></button>
-                <button onMouseDown={(e) => { e.preventDefault(); execCommand('italic'); }} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button onMouseDown={(e) => { e.preventDefault(); execCommand('underline'); }} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Underline"><Underline className="w-4 h-4" /></button>
+              <div className="flex items-center gap-1">
+                <button onMouseDown={(e) => { e.preventDefault(); execCommand('bold'); }} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="ตัวหนา"><Bold className="w-4 h-4" /></button>
+                <button onMouseDown={(e) => { e.preventDefault(); execCommand('italic'); }} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="ตัวเอียง"><Italic className="w-4 h-4" /></button>
+                <button onMouseDown={(e) => { e.preventDefault(); execCommand('underline'); }} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="ขีดเส้นใต้"><Underline className="w-4 h-4" /></button>
                 
                 <div className="relative">
-                  <button onClick={() => setShowColorPicker(showColorPicker === 'text' ? null : 'text')} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Text Color"><Palette className="w-5 h-5" /></button>
+                  <button onClick={() => setShowColorPicker(showColorPicker === 'text' ? null : 'text')} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="สีตัวอักษร"><Palette className="w-5 h-5" /></button>
                   {showColorPicker === 'text' && (
-                    <div className="absolute top-full left-0 mt-4 p-4 bg-white/95 backdrop-blur-2xl border border-zinc-100 rounded-[2rem] shadow-2xl flex gap-3 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="absolute top-full left-0 mt-2 p-2 bg-white border border-zinc-200 rounded-xl shadow-xl flex gap-2 z-50">
                       {colors.map(c => (
-                        <button key={c.name} onMouseDown={(e) => { e.preventDefault(); execCommand('foreColor', c.hex); setShowColorPicker(null); }} className={`w-8 h-8 rounded-full ${c.bg} hover:scale-125 transition-all shadow-md ring-4 ring-white`} />
+                        <button key={c.name} onMouseDown={(e) => { e.preventDefault(); execCommand('foreColor', c.hex); setShowColorPicker(null); }} className={`w-6 h-6 rounded-full ${c.bg} hover:scale-110 transition-all`} />
                       ))}
                     </div>
                   )}
                 </div>
                 
                 <div className="relative">
-                  <button onClick={() => setShowColorPicker(showColorPicker === 'highlight' ? null : 'highlight')} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Highlight"><Highlighter className="w-5 h-5" /></button>
+                  <button onClick={() => setShowColorPicker(showColorPicker === 'highlight' ? null : 'highlight')} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="ไฮไลท์"><Highlighter className="w-5 h-5" /></button>
                   {showColorPicker === 'highlight' && (
-                    <div className="absolute top-full left-0 mt-4 p-4 bg-white/95 backdrop-blur-2xl border border-zinc-100 rounded-[2rem] shadow-2xl flex gap-3 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="absolute top-full left-0 mt-2 p-2 bg-white border border-zinc-200 rounded-xl shadow-xl flex gap-2 z-50">
                       {highlights.map(c => (
-                        <button key={c.name} onMouseDown={(e) => { e.preventDefault(); execCommand('hiliteColor', c.hex); setShowColorPicker(null); }} className={`w-8 h-8 rounded-full ${c.bg} hover:scale-125 transition-all shadow-md ring-4 ring-white`} />
+                        <button key={c.name} onMouseDown={(e) => { e.preventDefault(); execCommand('hiliteColor', c.hex); setShowColorPicker(null); }} className={`w-6 h-6 rounded-full ${c.bg} hover:scale-110 transition-all`} />
                       ))}
                     </div>
                   )}
                 </div>
 
               <div className="relative">
-                <button onClick={() => setShowFontSizePicker(!showFontSizePicker)} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Font Size"><Type className="w-5 h-5" /></button>
+                <button onClick={() => setShowFontSizePicker(!showFontSizePicker)} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="ขนาดตัวอักษร"><Type className="w-5 h-5" /></button>
                 {showFontSizePicker && (
-                  <div className="absolute top-full left-0 mt-4 p-3 bg-white/95 backdrop-blur-2xl border border-zinc-100 rounded-[2rem] shadow-2xl z-50 flex flex-col min-w-[120px] max-h-80 overflow-y-auto custom-scrollbar animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute top-full left-0 mt-2 p-1 bg-white border border-zinc-200 rounded-xl shadow-xl z-50 flex flex-col min-w-[70px] max-h-64 overflow-y-auto custom-scrollbar">
                     {fontSizes.map(size => (
-                      <button key={size} onMouseDown={(e) => { e.preventDefault(); applyFontSize(size); }} className="px-6 py-3 text-[10px] text-left hover:bg-zen-bg hover:text-zen-navy rounded-xl font-black transition-all border-b border-zinc-50/50 last:border-0">{size}px</button>
+                      <button key={size} onMouseDown={(e) => { e.preventDefault(); applyFontSize(size); }} className="px-3 py-2 text-xs text-left hover:bg-zinc-50 rounded-md font-medium border-b border-zinc-50 last:border-0">{size}px</button>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="h-10 w-px bg-zinc-100 mx-2" />
+              <div className="h-6 w-px bg-zinc-100 mx-1" />
               <div className="relative group">
-                <button onClick={handleAddFloatingBox} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Floating Box">
-                  <div className="w-6 h-6 border-2 border-zinc-400 rounded-lg flex items-center justify-center text-[10px] font-black bg-white group-hover:bg-zen-blue group-hover:border-zen-navy transition-colors">A</div>
+                <button onClick={handleAddFloatingBox} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-600" title="เพิ่มกล่องข้อความ">
+                  <div className="w-5 h-5 border-2 border-zinc-500 rounded-md flex items-center justify-center text-[11px] font-black bg-white group-hover:bg-zinc-50 transition-colors">A</div>
                 </button>
               </div>
               
+              {/* Box Color Picker (Only visible when box is active) */}
               <AnimatePresence>
                 {activeBoxId && showBoxMenu && currentNote.floatingBoxes.find(b => b.id === activeBoxId) && (
-                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex items-center gap-2 ml-2 bg-white/90 backdrop-blur-md p-2 rounded-2xl border border-zinc-100 shadow-2xl">
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex items-center gap-1 ml-1 bg-zinc-50 p-1 rounded-xl border border-zinc-200 shadow-sm">
                     {boxColors.map(bc => (
-                      <button key={bc.name} onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); updateFloatingBox(activeBoxId, { color: bc.bg }); }} className={`w-7 h-7 rounded-lg ${bc.bg} border-2 ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.color === bc.bg ? 'border-zen-navy' : 'border-zinc-100'} hover:scale-110 transition-all shadow-sm`} />
+                      <button key={bc.name} onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); updateFloatingBox(activeBoxId, { color: bc.bg }); }} className={`w-5 h-5 rounded-lg ${bc.bg} border-2 ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.color === bc.bg ? 'border-indigo-400' : 'border-zinc-200'} hover:scale-110 transition-all`} />
                     ))}
-                    <div className="w-px h-8 bg-zinc-100 mx-1" />
+                    <div className="w-px h-5 bg-zinc-200 mx-1" />
                     <button onMouseDown={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       const box = currentNote.floatingBoxes.find(b => b.id === activeBoxId);
                       if (box) updateFloatingBox(activeBoxId, { isLocked: !box.isLocked });
-                    }} className={`p-2.5 rounded-xl transition-all ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? 'text-zen-navy bg-zen-blue shadow-inner' : 'text-zinc-400 hover:text-zinc-600'}`} title={currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? "Unlock" : "Lock"}>
+                    }} className={`p-1.5 rounded-lg transition-all ${currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? 'text-indigo-600 bg-indigo-50 shadow-inner' : 'text-zinc-400 hover:text-zinc-600'}`} title={currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? "Unlock" : "Lock"}>
                       {currentNote.floatingBoxes.find(b => b.id === activeBoxId)?.isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <button className="p-3 rounded-xl text-zinc-200 transition-all cursor-not-allowed" title="Connector"><ArrowUpRight className="w-5 h-5" /></button>
+              <button className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-400" title="ลูกศร (Coming Soon)"><ArrowUpRight className="w-5 h-5" /></button>
               
               <div className="relative">
-                <button onClick={() => setShowBoxImageGallery(!showImageGallery)} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Archive"><ImageIcon className="w-5 h-5" /></button>
+                <button onClick={() => setShowBoxImageGallery(!showImageGallery)} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="คลังภาพ"><ImageIcon className="w-5 h-5" /></button>
                 {showImageGallery && (
-                  <div className="absolute top-full left-0 mt-4 p-8 bg-white/95 backdrop-blur-2xl border border-zinc-100 rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] z-50 w-[480px] animate-in fade-in zoom-in-95 duration-200">
-                    <div className="flex items-center justify-between mb-8 px-2">
-                      <span className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em]">Asset Archive</span>
-                      <button onClick={() => fileInputRef.current?.click()} className="p-3 rounded-2xl bg-zen-navy text-white hover:scale-105 transition-all shadow-xl shadow-blue-900/20"><Plus className="w-5 h-5" /></button>
+                  <div className="absolute top-full left-0 mt-2 p-4 bg-white border border-zinc-200 rounded-3xl shadow-2xl z-50 w-80">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Image Gallery</span>
+                      <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all"><Plus className="w-4 h-4" /></button>
                       <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
                     </div>
-                    <div className="grid grid-cols-3 gap-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
+                    <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto custom-scrollbar">
                       {images.map(img => (
-                        <div key={img.id} className="relative group/img aspect-square rounded-[2rem] overflow-hidden border-4 border-white shadow-xl bg-zinc-50">
+                        <div key={img.id} className="relative group/img aspect-square rounded-xl overflow-hidden border border-zinc-100 bg-zinc-50">
                           <img 
                             src={img.url} 
                             onClick={() => { insertImage(img.url); setShowBoxImageGallery(false); }}
-                            className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500" 
+                            className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform" 
                           />
                           <button 
                             onClick={() => deleteImage(img.id)}
-                            className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-xl text-red-500 opacity-0 group-hover/img:opacity-100 transition-all shadow-2xl hover:bg-red-50"
+                            className="absolute top-1 right-1 p-1 bg-white/80 backdrop-blur-sm rounded-md text-red-500 opacity-0 group-hover/img:opacity-100 transition-opacity"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       ))}
                       {images.length === 0 && (
-                        <div className="col-span-3 py-20 text-center text-[10px] font-black text-zinc-200 uppercase tracking-[0.4em] border-4 border-dashed border-zinc-50 rounded-[2.5rem]">Void</div>
+                        <div className="col-span-3 py-8 text-center text-[10px] font-bold text-zinc-300 uppercase">No Images</div>
                       )}
                     </div>
                   </div>
@@ -429,108 +425,89 @@ const NotesView = ({ store }) => {
               </div>
 
               <div className="relative">
-                <button onClick={() => setShowLinkDialog(!showLinkDialog)} className="p-3 rounded-xl hover:bg-zen-blue hover:text-zen-navy text-zinc-400 transition-all" title="Link"><LinkIcon className="w-5 h-5" /></button>
+                <button onClick={() => setShowLinkDialog(!showLinkDialog)} className="p-2 rounded-lg hover:bg-zinc-100 text-zinc-500" title="เพิ่มลิงก์"><LinkIcon className="w-5 h-5" /></button>
                 {showLinkDialog && (
-                  <div className="absolute top-full left-0 mt-4 p-8 bg-white/95 backdrop-blur-2xl border border-zinc-100 rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] z-50 w-[320px] space-y-6 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em]">Protocol Link</div>
+                  <div className="absolute top-full left-0 mt-2 p-4 bg-white border border-zinc-200 rounded-3xl shadow-2xl z-50 w-72 space-y-3">
+                    <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Add Link</div>
                     <input 
-                      type="text" placeholder="URL Endpoint" 
+                      type="text" placeholder="URL (เช่น https://...)" 
                       value={linkData.url} onChange={e => setLinkData({...linkData, url: e.target.value})}
-                      className="w-full p-5 text-xs border-2 border-zinc-50 rounded-2xl focus:ring-8 focus:ring-zen-blue/20 focus:border-zen-blue outline-none bg-zinc-50/50 font-black transition-all"
+                      className="w-full p-2 text-xs border border-zinc-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                     />
                     <input 
-                      type="text" placeholder="Link Alias" 
+                      type="text" placeholder="ชื่อเรียก (ถ้ามี)" 
                       value={linkData.text} onChange={e => setLinkData({...linkData, text: e.target.value})}
-                      className="w-full p-5 text-xs border-2 border-zinc-50 rounded-2xl focus:ring-8 focus:ring-zen-blue/20 focus:border-zen-blue outline-none bg-zinc-50/50 font-black transition-all"
+                      className="w-full p-2 text-xs border border-zinc-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                     />
-                    <Button onClick={insertLink} className="w-full h-14 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] bg-zen-navy text-white hover:scale-[1.02] transition-transform shadow-2xl shadow-blue-900/20 border-0">Connect Link</Button>
+                    <Button onClick={insertLink} variant="primary" size="sm" className="w-full h-8 rounded-xl text-[10px] font-black uppercase">Insert Link</Button>
                   </div>
                 )}
               </div>
 
-              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={handleExportPDF} disabled={isExporting} className="p-3 rounded-xl hover:bg-zen-purple hover:text-zen-purple-dark text-purple-400 transition-all shadow-sm bg-white border border-zinc-50" title="Export PDF">
+              <button onClick={handleExportPDF} disabled={isExporting} className="p-2 rounded-lg hover:bg-zinc-100 text-indigo-600" title="ส่งออก PDF">
                 {isExporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-              </motion.button>
+              </button>
 
-              <div className="h-10 w-px bg-zinc-100 mx-4" />
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAiSummarize} disabled={isAnalyzing} 
-                className="h-12 px-6 rounded-2xl bg-white text-zinc-900 transition-all flex items-center gap-3 border-2 border-zinc-100 shadow-xl hover:border-zen-blue hover:shadow-blue-900/5" 
-                title="AI Engine"
-              >
-                {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-zen-blue-dark" />}
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] hidden sm:inline">Zen Intel</span>
-              </motion.button>
+              <div className="h-6 w-px bg-zinc-200 mx-2" />
+              <button onClick={handleAiSummarize} disabled={isAnalyzing} className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all flex items-center gap-2 border border-indigo-100" title="AI สรุปใจความ">
+                {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                <span className="text-xs font-black uppercase tracking-widest hidden sm:inline">AI ASSIST</span>
+              </button>
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3 px-4 py-2 bg-zinc-50 rounded-full border border-zinc-100 shadow-inner">
-            <div className={`w-2 h-2 rounded-full ${saveStatus === 'saving' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
-            <span className="text-[9px] text-zinc-400 font-black uppercase tracking-widest">{saveStatus === 'saving' ? 'Syncing...' : 'Encrypted'}</span>
-          </div>
+        <div className="flex items-center gap-3">
+          <div className="text-xs text-zinc-400 font-medium">{saveStatus === 'saving' ? 'Saving...' : 'Autosaved'}</div>
           <div className="relative">
-            <motion.button 
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowTemplatePicker(!showTemplatePicker)} 
-              className="h-12 px-8 rounded-2xl bg-zen-navy text-white flex items-center gap-4 font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-blue-900/20 transition-all"
-            >
-              <Plus className="w-4 h-4 stroke-[3]" /> New Protocol
-            </motion.button>
+            <Button variant="primary" size="sm" onClick={() => setShowTemplatePicker(!showTemplatePicker)} className="gap-2 h-9 rounded-xl shadow-md hover:shadow-lg transition-all">
+              <Plus className="w-4 h-4" /> เพิ่มหน้า
+            </Button>
             {showTemplatePicker && (
-              <div className="absolute top-full right-0 mt-6 w-[360px] bg-white border border-zinc-100 rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] p-6 z-50 grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="px-6 pb-4 text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em]">Blueprint Selector</div>
+              <div className="absolute top-full right-0 mt-3 w-72 bg-white border border-zinc-200 rounded-3xl shadow-2xl p-4 z-50 grid grid-cols-1 gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
                 {templates.map(t => (
-                  <button key={t.id} onMouseDown={(e) => { e.preventDefault(); handleAddPage(t.id); }} className="flex items-center gap-6 p-5 rounded-[2rem] hover:bg-zen-blue/30 text-left group transition-all border border-transparent hover:border-white hover:shadow-2xl">
-                    <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center group-hover:text-zen-navy shadow-xl group-hover:scale-110 transition-all border border-zinc-50"><t.icon className="w-8 h-8" /></div>
-                    <div><p className="text-sm font-black text-zinc-900 group-hover:text-zen-navy transition-colors">{t.label}</p><p className="text-[10px] text-zinc-400 font-bold group-hover:text-zen-navy/60 transition-colors mt-1">{t.desc}</p></div>
+                  <button key={t.id} onMouseDown={(e) => { e.preventDefault(); handleAddPage(t.id); }} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-indigo-50/50 text-left group transition-all border border-transparent hover:border-indigo-100">
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-50 flex items-center justify-center group-hover:bg-white group-hover:text-indigo-600 shadow-sm group-hover:shadow transition-all"><t.icon className="w-6 h-6" /></div>
+                    <div><p className="text-sm font-black text-zinc-800 group-hover:text-indigo-700">{t.label}</p><p className="text-[11px] text-zinc-400 font-medium group-hover:text-indigo-400">{t.desc}</p></div>
                   </button>
                 ))}
               </div>
             )}
           </div>
-          <div className="flex bg-zinc-50 p-1.5 rounded-2xl border border-zinc-100 shadow-inner">
-            <button onMouseDown={(e) => { e.preventDefault(); handlePrevPage(); }} disabled={currentIndex === 0} className="p-2.5 rounded-xl hover:bg-white disabled:opacity-20 transition-all text-zinc-400 hover:text-zinc-900 shadow-none hover:shadow-sm"><ChevronLeft className="w-5 h-5" /></button>
-            <div className="px-6 flex items-center">
-              <span className="text-xs font-black text-zinc-900 tracking-tighter tabular-nums">{currentIndex + 1}</span>
-              <span className="mx-2 text-zinc-200 font-black">/</span>
-              <span className="text-xs font-black text-zinc-300 tracking-tighter tabular-nums">{notes.length}</span>
-            </div>
-            <button onMouseDown={(e) => { e.preventDefault(); handleNextPage(); }} disabled={currentIndex === notes.length - 1} className="p-2.5 rounded-xl hover:bg-white disabled:opacity-20 transition-all text-zinc-400 hover:text-zinc-900 shadow-none hover:shadow-sm"><ChevronRight className="w-5 h-5" /></button>
+          <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 shadow-sm">
+            <button onMouseDown={(e) => { e.preventDefault(); handlePrevPage(); }} disabled={currentIndex === 0} className="p-1.5 rounded-lg hover:bg-white disabled:opacity-30 transition-all"><ChevronLeft className="w-4 h-4" /></button>
+            <span className="px-3 text-xs font-black text-zinc-500 flex items-center tracking-tighter">{currentIndex + 1} / {notes.length}</span>
+            <button onMouseDown={(e) => { e.preventDefault(); handleNextPage(); }} disabled={currentIndex === notes.length - 1} className="p-1.5 rounded-lg hover:bg-white disabled:opacity-30 transition-all"><ChevronRight className="w-4 h-4" /></button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div 
-        className="flex-1 overflow-y-auto custom-scrollbar bg-zen-bg p-6 sm:p-20 lg:p-32" 
-        onMouseDown={() => { setActiveBoxId(null); setShowBoxMenu(false); }}
+        className="flex-1 overflow-y-auto custom-scrollbar bg-zinc-50 p-4 sm:p-12" 
+        onMouseDown={() => { setActiveBoxId(null); setShowBoxMenu(false); }} // Close when clicking anywhere on background
       >
-        <div className="max-w-[1100px] mx-auto min-h-full relative" onMouseDown={(e) => e.stopPropagation()}>
+        <div className="max-w-[1400px] mx-auto min-h-full relative" onMouseDown={(e) => e.stopPropagation()}>
           <AnimatePresence mode="wait" custom={direction}>
             {!showHistory ? (
               <motion.div
                 key={currentNote.id} ref={paperRef} custom={direction} initial="initial" animate="animate" exit="exit"
                 variants={pageVariants}
-                className={`w-full flex-1 bg-white shadow-[0_50px_120px_-30px_rgba(0,0,0,0.06)] rounded-[1.5rem] relative flex flex-col transition-all duration-700 border border-zinc-100
-                  ${currentNote.template === 'slide' ? 'aspect-[16/9] min-h-0' : 'min-h-[1600px]'}
-                  ${currentNote.template === 'notebook' ? 'bg-[linear-gradient(#f1f5f9_1px,transparent_1px)] bg-[size:100%_3.5rem] !leading-[3.5rem]' : ''}
+                className={`w-full flex-1 bg-white shadow-2xl rounded-sm relative flex flex-col transition-all duration-500
+                  ${currentNote.template === 'slide' ? 'aspect-[16/9] min-h-0' : 'min-h-[1400px]'}
+                  ${currentNote.template === 'notebook' ? 'bg-[linear-gradient(#e5e7eb_1px,transparent_1px)] bg-[size:100%_2.5rem] !leading-[2.5rem]' : ''}
                 `}
-                onMouseDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking on the paper
               >
-                {currentNote.template === 'notebook' && <div className="absolute left-28 top-0 bottom-0 w-1 bg-red-50/50 z-0" />}
+                {currentNote.template === 'notebook' && <div className="absolute left-20 top-0 bottom-0 w-px bg-red-200 z-0" />}
                 
-                <div className={`p-24 sm:p-40 flex-1 flex flex-col z-10 ${currentNote.template === 'notebook' ? 'pl-48 pt-[4.8rem]' : ''}`}>
+                <div className={`p-16 sm:p-24 flex-1 flex flex-col z-10 ${currentNote.template === 'notebook' ? 'pl-32 pt-[3.8rem]' : ''}`}>
                   {/* Unified Content Area (Title + Body) */}
                   <div 
                     ref={editorRef} contentEditable onInput={handleEditorChange}
                     onFocus={() => { setActiveBoxId(null); setShowBoxMenu(false); }}
-                    className={`flex-1 outline-none min-h-[1200px] leading-relaxed font-medium text-zinc-800 ${currentNote.template === 'notebook' ? '!leading-[3.5rem]' : ''}`}
-                    style={{ fontSize: '22px' }}
+                    className={`flex-1 outline-none min-h-[800px] leading-relaxed ${currentNote.template === 'notebook' ? '!leading-[2.5rem]' : ''}`}
+                    style={{ fontSize: '18px' }}
                   />
 
                   {/* Floating Boxes */}
@@ -540,7 +517,7 @@ const NotesView = ({ store }) => {
                       drag={!box.isLocked}
                       dragMomentum={false}
                       dragElastic={0}
-                      whileDrag={{ scale: 1.05, zIndex: 100 }}
+                      whileDrag={{ scale: 1.02, cursor: 'grabbing' }}
                       onDragStart={() => setActiveBoxId(box.id)}
                       onDragEnd={(e, info) => {
                         const newX = box.x + info.offset.x;
@@ -551,35 +528,38 @@ const NotesView = ({ store }) => {
                         e.stopPropagation(); 
                         toggleActiveBox(box.id);
                       }}
-                      className={`absolute p-8 ${box.color} border-4 ${activeBoxId === box.id ? 'border-zen-navy shadow-2xl z-40' : 'border-white shadow-xl z-20'} rounded-[3rem] min-w-[300px] group/box cursor-grab transition-all duration-500`}
+                      className={`absolute p-5 ${box.color} border-2 ${activeBoxId === box.id ? 'border-indigo-400 shadow-2xl z-40' : 'border-dashed border-zinc-200 z-20'} rounded-3xl shadow-xl min-w-[220px] group/box cursor-grab transition-all duration-200`}
                       style={{ left: box.x, top: box.y }}
                     >
                       <div 
                         id={`box-content-${box.id}`} contentEditable 
                         onInput={(e) => handleBoxContentChange(box.id, e.target.innerHTML)}
                         onFocus={() => { setActiveBoxId(box.id); setShowBoxMenu(true); }}
-                        onMouseDown={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking text
                         dangerouslySetInnerHTML={{ __html: box.content }}
-                        className="outline-none text-lg font-black leading-relaxed min-h-[1.5em] empty:before:content-[attr(placeholder)] empty:before:text-zinc-300 text-zinc-900"
-                        placeholder="System input..."
+                        className="outline-none text-sm leading-relaxed min-h-[1.5em] empty:before:content-[attr(placeholder)] empty:before:text-zinc-300"
+                        placeholder="พิมพ์ข้อความ..."
                       />
                       
+                      {/* Drag Handle Indicator */}
                       {!box.isLocked && (
-                        <div className="absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 group-hover/box:opacity-100 transition-all bg-white border border-zinc-100 rounded-full p-2.5 shadow-2xl">
-                          <MousePointer2 className="w-5 h-5 text-zen-navy fill-zen-blue" />
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover/box:opacity-100 transition-all bg-white border border-zinc-200 rounded-full p-1 shadow-sm">
+                          <MousePointer2 className="w-3 h-3 text-indigo-500 fill-indigo-50" />
                         </div>
                       )}
 
+                      {/* Delete Button */}
                       <button 
                         onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); deleteFloatingBox(box.id); }}
-                        className="absolute -top-4 -right-4 w-10 h-10 bg-white border border-zinc-50 text-zinc-300 hover:text-red-500 rounded-[1.25rem] flex items-center justify-center opacity-0 group-hover/box:opacity-100 transition-all shadow-2xl hover:scale-110"
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-white border border-zinc-200 text-zinc-400 hover:text-red-500 hover:border-red-100 rounded-full flex items-center justify-center opacity-0 group-hover/box:opacity-100 transition-all shadow-sm hover:shadow-md"
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-3.5 h-3.5" />
                       </button>
 
+                      {/* Lock Indicator Overlay */}
                       {box.isLocked && (
-                        <div className="absolute top-6 right-6 text-zinc-200">
-                          <Lock className="w-5 h-5" />
+                        <div className="absolute top-2 right-2 text-zinc-300">
+                          <Lock className="w-3 h-3" />
                         </div>
                       )}
                     </motion.div>
@@ -588,43 +568,38 @@ const NotesView = ({ store }) => {
                   {/* AI Summary Panel */}
                   <AnimatePresence>
                     {aiSummary && (
-                      <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className="mt-20 p-12 bg-zinc-900 text-white rounded-[4rem] border-[12px] border-white shadow-[0_64px_128px_-32px_rgba(0,0,0,0.3)] relative group">
-                        <button onClick={() => setAiSummary('')} className="absolute top-8 right-8 text-zinc-500 hover:text-white transition-colors"><X className="w-8 h-8" /></button>
-                        <div className="flex items-center gap-4 mb-8 text-[10px] font-black uppercase tracking-[0.5em] text-zen-blue-dark"><Sparkles className="w-6 h-6" /> Zen Intel Summary</div>
-                        <p className="text-2xl text-zinc-100 leading-relaxed font-black tracking-tight italic opacity-90">{aiSummary}</p>
-                        <div className="absolute inset-0 bg-gradient-to-tr from-zen-blue-dark/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[3.5rem]" />
+                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="mt-8 p-6 bg-indigo-50 rounded-3xl border border-indigo-100 relative">
+                        <button onClick={() => setAiSummary('')} className="absolute top-4 right-4 text-indigo-300 hover:text-indigo-500"><X className="w-5 h-5" /></button>
+                        <div className="flex items-center gap-2 mb-3 text-[10px] font-black uppercase text-indigo-500"><Sparkles className="w-4 h-4" /> AI Summary</div>
+                        <p className="text-sm text-indigo-900 leading-relaxed italic">{aiSummary}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
               </motion.div>
             ) : (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-12">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {filteredNotes.map((note, index) => {
                   const originalIndex = notes.findIndex(n => n.id === note.id);
                   return (
-                    <motion.div 
-                      whileHover={{ y: -12, scale: 1.02 }}
-                      key={note.id} className="bg-white p-12 rounded-[3.5rem] border border-zinc-100 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.05)] hover:shadow-blue-900/5 transition-all group h-[560px] flex flex-col relative overflow-hidden"
-                    >
-                      <div className="flex justify-between items-start mb-10">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-[1.5rem] bg-zinc-50 flex items-center justify-center text-zinc-300 group-hover:bg-zen-blue group-hover:text-zen-navy transition-all duration-500 border border-zinc-100">
-                            {templates.find(t => t.id === note.template)?.icon && React.createElement(templates.find(t => t.id === note.template).icon, { className: "w-7 h-7" })}
+                    <div key={note.id} className="bg-white p-8 rounded-3xl border border-zinc-200 shadow-sm hover:shadow-2xl transition-all group h-96 flex flex-col relative overflow-hidden">
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400">
+                            {templates.find(t => t.id === note.template)?.icon && React.createElement(templates.find(t => t.id === note.template).icon, { className: "w-5 h-5" })}
                           </div>
-                          <span className="text-[10px] font-black text-zinc-200 uppercase tracking-[0.4em] group-hover:text-zen-navy/30 transition-colors">Protocol {originalIndex + 1}</span>
+                          <span className="text-[10px] font-black text-zinc-300 uppercase">PAGE {originalIndex + 1}</span>
                         </div>
-                        <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-6 group-hover:translate-x-0 duration-500">
-                          <button onClick={() => { setCurrentIndex(originalIndex); setShowHistory(false); }} className="p-4 bg-white hover:bg-zen-blue hover:text-zen-navy rounded-2xl transition-all shadow-xl border border-zinc-50"><Edit3 className="w-6 h-6" /></button>
-                          <button onClick={() => deleteNote(note.id)} className="p-4 bg-white hover:bg-red-50 hover:text-red-600 rounded-2xl transition-all shadow-xl border border-zinc-50"><Trash2 className="w-6 h-6" /></button>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                          <button onClick={() => { setCurrentIndex(originalIndex); setShowHistory(false); }} className="p-2 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-all"><Edit3 className="w-5 h-5" /></button>
+                          <button onClick={() => deleteNote(note.id)} className="p-2 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all"><Trash2 className="w-5 h-5" /></button>
                         </div>
                       </div>
-                      <div className="text-lg text-zinc-400 line-clamp-[10] font-medium italic flex-1 leading-relaxed opacity-60 group-hover:opacity-100 transition-opacity" dangerouslySetInnerHTML={{ __html: note.content }} />
-                      <div className="mt-10 pt-10 border-t border-zinc-50 text-[10px] font-black text-zinc-200 uppercase tracking-[0.3em] flex items-center justify-between group-hover:text-zinc-400 transition-colors">
-                        <span>{new Date(note.updatedAt).toLocaleDateString('th-TH')}</span>
-                        <span className="text-zen-blue-dark/20 font-black tracking-[0.5em]">{note.template}</span>
+                      <div className="text-sm text-zinc-400 line-clamp-[10] italic flex-1" dangerouslySetInnerHTML={{ __html: note.content }} />
+                      <div className="mt-6 pt-6 border-t border-zinc-50 text-[10px] font-bold text-zinc-300 uppercase tracking-tighter">
+                        {new Date(note.updatedAt).toLocaleDateString('th-TH')}
                       </div>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </motion.div>

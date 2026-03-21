@@ -72,303 +72,281 @@ const HomeView = ({ store }) => {
   }).filter(c => c.total > 0);
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-12 custom-scrollbar bg-zen-bg">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+      <div className="max-w-6xl mx-auto space-y-6">
         
-        {/* TOP GREETING & HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          <div className="space-y-4">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              className="flex items-center gap-3"
-            >
-              <div className={`p-2.5 rounded-2xl bg-white shadow-sm border border-zinc-50 ${greeting.color}`}>
-                <greeting.icon className="w-5 h-5" /> 
-              </div>
-              <div className="flex flex-col">
-                <span className="text-zinc-400 font-black uppercase tracking-[0.3em] text-[10px] leading-none mb-1">{greeting.text}</span>
-                <span className="text-zinc-900 font-black text-sm tracking-tight">ยินดีต้อนรับกลับมา, Zen Operator</span>
-              </div>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 mb-1">
+              <greeting.icon className={`w-5 h-5 ${greeting.color}`} /> 
+              <span className="text-zinc-500 font-medium">{greeting.text}</span>
             </motion.div>
-            <h2 className="text-5xl sm:text-6xl font-black text-zinc-900 tracking-tighter leading-none">
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900">
               วันนี้, {new Intl.DateTimeFormat('th-TH', { day: 'numeric', month: 'long' }).format(new Date())}
             </h2>
           </div>
+        </div>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-4 bg-white p-3 rounded-[2rem] border border-zinc-50 shadow-sm"
-          >
-            <div className="w-12 h-12 bg-zen-navy rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/10">
-              <Sparkles className="w-6 h-6 text-white" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }} className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center gap-5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10 opacity-50" />
+            <div className="relative w-20 h-20 flex-shrink-0">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r={circleRadius} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-zinc-100" />
+                <motion.circle 
+                  cx="50" cy="50" r={circleRadius} stroke="currentColor" strokeWidth="8" fill="transparent" 
+                  strokeDasharray={circleCircumference} 
+                  initial={{ strokeDashoffset: circleCircumference }} animate={{ strokeDashoffset: circleOffset }} transition={{ duration: 1, ease: "easeOut" }}
+                  strokeLinecap="round" className={`${progressPercent === 100 ? 'text-emerald-500' : 'text-indigo-600'}`} 
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-lg font-bold text-zinc-900">{progressPercent}%</span>
+              </div>
             </div>
-            <div className="pr-4">
-              <div className="text-[10px] font-black text-zinc-300 uppercase tracking-widest leading-none mb-1">Current Status</div>
-              <div className="text-sm font-black text-zen-navy tracking-tight">Focus Protocol Active</div>
+            <div>
+              <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">ความคืบหน้า</h3>
+              <p className="text-lg font-bold text-zinc-900 mt-0.5">
+                {progressPercent === 100 ? 'ยอดเยี่ยม! เสร็จหมดแล้ว 🎉' : 'มาลุยกันต่อเลย!'}
+              </p>
             </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex flex-col justify-center">
+             <div className="flex items-center gap-3 mb-3">
+               <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><ListTree className="w-5 h-5" /></div>
+               <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">รายการงานวันนี้</h3>
+             </div>
+             <div className="flex items-baseline gap-2">
+               <span className="text-3xl font-bold text-zinc-900">{completedTasks}</span>
+               <span className="text-lg text-zinc-400 font-medium">/ {totalTasks}</span>
+               <span className="text-sm text-zinc-500 ml-2">รายการที่เสร็จแล้ว</span>
+             </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex flex-col justify-center relative overflow-hidden">
+             <div className="absolute -right-4 -bottom-4 opacity-10"><TrendingUp className="w-32 h-32 text-amber-500" /></div>
+             <div className="flex items-center gap-3 mb-3 relative z-10">
+               <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Star className="w-5 h-5" /></div>
+               <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">คะแนนความโปร่งใส</h3>
+             </div>
+             <div className="flex items-baseline gap-2 relative z-10">
+               <span className={`text-3xl font-bold ${globalScore < 0 ? 'text-red-600' : 'text-zinc-900'}`}>{globalScore}</span>
+               <span className="text-sm text-zinc-500 ml-1">XP</span>
+             </div>
           </motion.div>
         </div>
 
-        {/* STATS OVERVIEW - RESTORED ORIGINAL LAYOUT */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          {/* Today's Tasks Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ delay: 0.1 }} 
-            className="bg-white p-10 rounded-[3.5rem] border border-zinc-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center relative overflow-hidden group hover:border-zen-blue/40 transition-colors"
-          >
-            <div className="absolute -right-4 -top-4 w-32 h-32 bg-zen-blue/20 rounded-full blur-3xl group-hover:bg-zen-blue/40 transition-all duration-700" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
             
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-zen-blue/30 text-zen-blue-dark rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                <ListTree className="w-6 h-6" />
-              </div>
-              <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em]">รายการงานวันนี้</h3>
-            </div>
-            
-            <div className="flex items-baseline gap-4 relative z-10">
-              <span className="text-7xl font-black text-zinc-900 tracking-tighter">{completedTasks} / {totalTasks}</span>
-            </div>
-            <p className="mt-3 text-[11px] font-black text-zinc-300 uppercase tracking-[0.25em]">รายการที่เสร็จแล้ว</p>
-            
-            <div className="mt-10 h-3 bg-zinc-50 rounded-full overflow-hidden border border-zinc-100 shadow-inner p-0.5">
-              <motion.div 
-                initial={{ width: 0 }} 
-                animate={{ width: `${progressPercent}%` }} 
-                className="h-full bg-gradient-to-r from-zen-blue-dark to-sky-400 rounded-full shadow-lg"
-              />
-            </div>
-          </motion.div>
-
-          {/* XP Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ delay: 0.2 }} 
-            className="bg-white p-10 rounded-[3.5rem] border border-zinc-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center relative overflow-hidden group hover:border-zen-matcha/40 transition-colors"
-          >
-            <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-zen-matcha/20 rounded-full blur-3xl group-hover:bg-zen-matcha/40 transition-all duration-700" />
-            
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-zen-matcha/30 text-zen-matcha-dark rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-              <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em]">คะแนนความโปร่งใส</h3>
-            </div>
-            
-            <div className="flex items-baseline gap-4 relative z-10">
-              <span className={`text-7xl font-black tracking-tighter ${globalScore < 0 ? 'text-red-500' : 'text-zinc-900'}`}>
-                {globalScore.toLocaleString()}
-              </span>
-              <span className="text-2xl font-black text-zen-matcha-dark tracking-tighter">XP</span>
-            </div>
-            <p className="mt-3 text-[11px] font-black text-zinc-300 uppercase tracking-[0.25em]">Total Experience Points</p>
-          </motion.div>
-
-          {/* Trophies Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ delay: 0.3 }} 
-            className="bg-white p-10 rounded-[3.5rem] border border-zinc-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center relative overflow-hidden group hover:border-zen-purple/40 transition-colors"
-          >
-            <div className="absolute -left-4 -top-4 w-32 h-32 bg-zen-purple/20 rounded-full blur-3xl group-hover:bg-zen-purple/40 transition-all duration-700" />
-            
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-zen-purple/30 text-zen-purple-dark rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                <Target className="w-6 h-6" />
-              </div>
-              <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em]">ความสำเร็จสะสม</h3>
-            </div>
-            
-            <div className="flex items-baseline gap-4 relative z-10">
-              <span className="text-7xl font-black text-zinc-900 tracking-tighter">{store.rewards.trophies}</span>
-              <span className="text-xl font-black text-zinc-300 uppercase tracking-widest">Rewards</span>
-            </div>
-            
-            <div className="mt-10 flex items-center gap-3">
-              {[1,2,3,4,5].map(i => (
-                <div key={i} className={`h-2.5 flex-1 rounded-full transition-all duration-500 ${i <= store.rewards.trophies ? 'bg-zen-purple-dark shadow-[0_0_15px_rgba(147,51,234,0.3)]' : 'bg-zinc-100 opacity-50'}`} />
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* MAIN CONTENT GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-6">
-          
-          {/* FOCUS SECTION */}
-          <div className="lg:col-span-8 space-y-10">
-            <div className="flex items-center justify-between px-4">
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black text-zen-navy uppercase tracking-[0.4em] mb-2">Priority Missions</span>
-                <h3 className="text-3xl font-black text-zinc-900 tracking-tight flex items-center gap-4">
-                  <div className="w-3 h-10 bg-zen-navy rounded-full" />
-                  ภารกิจที่ต้องโฟกัสวันนี้
+            {/* NEW Workspace Tasks Section on Home */}
+            {(activeWorkspaceTasks.length > 0 || completedWorkspaceTasks.length > 0) && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-zinc-900 flex items-center">
+                  <Timer className="w-5 h-5 mr-2 text-purple-500" /> ภารกิจจับเวลา (Workspace)
                 </h3>
-              </div>
-              <Button variant="ghost" size="sm" className="text-zinc-400 font-black hover:text-zen-navy uppercase tracking-[0.2em] text-[10px] bg-white border border-zinc-50 px-6 py-3 rounded-2xl shadow-sm">
-                View Protocol <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            </div>
-            
-            <div className="space-y-6">
-              <AnimatePresence mode='popLayout'>
-                {sortedTasks.length > 0 ? (
-                  sortedTasks.map((task) => (
-                    <motion.div
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      key={task.id}
-                      className={`group p-8 rounded-[3rem] border transition-all flex items-center gap-8 ${
-                        task.completed 
-                        ? 'bg-zinc-50/50 border-zinc-100 opacity-60' 
-                        : 'bg-white border-white hover:border-zen-blue shadow-[0_20px_40px_-20px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:-translate-y-1'
-                      }`}
-                    >
-                      <button 
-                        onClick={() => toggleTaskToday(task.id)}
-                        className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center transition-all shadow-inner ${
-                          task.completed ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-zinc-50 text-zinc-300 hover:bg-zen-blue hover:text-zen-blue-dark'
-                        }`}
-                      >
-                        {task.completed ? <CheckCircle2 className="w-8 h-8" /> : <Circle className="w-8 h-8" />}
-                      </button>
-                      
-                      <div className="flex-1 min-w-0 space-y-2">
-                        <div className="flex items-center gap-3">
-                          {task.time && (
-                            <span className="text-[10px] font-black text-zinc-400 flex items-center gap-2 bg-zinc-50 px-4 py-1.5 rounded-full border border-zinc-100 uppercase tracking-widest">
-                              <Clock className="w-4 h-4" /> {task.time}
-                            </span>
-                          )}
-                          <TaskBadges task={task} compact />
-                        </div>
-                        <h4 className={`text-2xl font-bold tracking-tight truncate ${task.completed ? 'text-zinc-400 line-through' : 'text-zinc-800'}`}>
-                          {task.text}
-                        </h4>
+                <div className="bg-white rounded-2xl border border-purple-100 shadow-sm overflow-hidden divide-y divide-purple-50">
+                  {/* Active Workspace Tasks */}
+                  {activeWorkspaceTasks.map(task => (
+                    <div key={task.id} className="p-4 flex items-center justify-between bg-purple-50/30">
+                      <div className="flex items-center gap-3">
+                        {task.status === 'running' ? (
+                          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+                        ) : (
+                          <div className="w-2 h-2 bg-zinc-300 rounded-full" />
+                        )}
+                        <span className="font-semibold text-purple-900">{task.text}</span>
                       </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`font-mono font-bold ${task.currentSeconds < 0 ? 'text-red-500' : 'text-purple-600'}`}>
+                          {formatTimer(task.currentSeconds)}
+                        </span>
+                        {task.status === 'idle' && (
+                          <Button size="sm" onClick={() => store.startTimer(task.id)} className="bg-purple-600 hover:bg-purple-700 h-7 text-xs">
+                            เริ่มจับเวลา
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Completed Workspace Tasks */}
+                  {completedWorkspaceTasks.map(task => (
+                    <div key={task.id} className="p-4 flex items-center justify-between bg-zinc-50/50 opacity-70">
+                      <div className="flex items-center gap-3">
+                        {task.status === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <X className="w-5 h-5 text-red-500" />}
+                        <span className="font-medium text-zinc-600 line-through">{task.text}</span>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className={`text-xs font-bold ${task.status === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                          {task.status === 'success' ? '+' : ''}{task.xpEarned} XP
+                        </span>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          เหลือ {formatTimer(task.currentSeconds)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                      {task.subtasks && task.subtasks.length > 0 && (
-                        <div className="hidden sm:flex items-center gap-3 bg-zinc-50/80 px-5 py-3 rounded-[1.5rem] border border-zinc-100 shadow-inner">
-                          <ListTree className="w-4 h-4 text-zinc-400" />
-                          <span className="text-[11px] font-black text-zinc-500 tabular-nums uppercase tracking-widest">
-                            {task.subtasks.filter(s => s.completed).length} / {task.subtasks.length}
-                          </span>
-                        </div>
-                      )}
-                    </motion.div>
-                  ))
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-zinc-900 flex items-center">
+                  <Target className="w-5 h-5 mr-2 text-indigo-500" /> สิ่งที่ต้องโฟกัสวันนี้
+                </h3>
+                {totalTasks > 0 && (
+                  <span className="text-xs font-medium text-zinc-500 bg-zinc-100 px-2 py-1 rounded-full">เหลืออีก {totalTasks - completedTasks} งาน</span>
+                )}
+              </div>
+
+              <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
+                {calendarTasks.length === 0 ? (
+                  <div className="p-10 flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
+                      <Coffee className="w-8 h-8 text-zinc-400" /> 
+                    </div>
+                    <h4 className="text-zinc-900 font-medium mb-1">วันนี้ยังไม่มีรายการงาน</h4>
+                    <p className="text-zinc-500 text-sm mb-4">เพิ่มงานลงในปฏิทินเพื่อเริ่มต้นจัดการวันของคุณ</p>
+                  </div>
                 ) : (
-                  <div className="bg-white/40 backdrop-blur-sm border-4 border-dashed border-zinc-100 rounded-[4rem] p-24 text-center space-y-8">
-                    <div className="w-28 h-28 bg-white rounded-[3rem] flex items-center justify-center mx-auto shadow-2xl shadow-zinc-200/50">
-                      <Target className="w-14 h-14 text-zinc-100" />
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-zinc-400 font-black uppercase tracking-[0.4em] text-[10px]">Zen State: Empty</p>
-                      <p className="text-zinc-300 text-lg font-bold tracking-tight">ไม่มีภารกิจค้างในรายการ วันนี้คือพื้นที่ว่างของคุณ</p>
-                    </div>
-                    <Button onClick={() => window.dispatchEvent(new CustomEvent('nav-to-calendar'))} className="bg-zen-navy text-white px-10 py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-[0_20px_40px_-10px_rgba(30,58,138,0.3)] hover:scale-105 transition-all">
-                      <Plus className="w-5 h-5 mr-3" /> Initialize Protocol
-                    </Button>
+                  <div className="divide-y divide-zinc-100">
+                    <AnimatePresence>
+                      {sortedTasks.map((task, i) => (
+                        <motion.div 
+                          key={task.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }} transition={{ delay: i * 0.05 }}
+                          className={`p-4 flex gap-4 transition-colors hover:bg-zinc-50/50 ${task.completed ? 'opacity-60 bg-zinc-50' : ''}`}
+                        >
+                          <button onClick={() => toggleTaskToday(task.id)} className="mt-0.5 flex-shrink-0 group focus:outline-none">
+                            {task.completed ? (
+                              <CheckCircle2 className="w-6 h-6 text-emerald-500" /> 
+                            ) : (
+                              <Circle className="w-6 h-6 text-zinc-300 group-hover:text-indigo-400 transition-colors" /> 
+                            )}
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start gap-2 w-full">
+                              <p className={`text-sm font-bold flex-1 ${task.completed ? 'text-zinc-500 line-through' : 'text-zinc-900'}`}>
+                                {task.text}
+                              </p>
+                              {task.time && (
+                                <span className="text-[11px] font-medium text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded-full flex-shrink-0 flex items-center">
+                                  <Clock className="w-3 h-3 mr-1" /> {task.time}
+                                </span>
+                              )}
+                            </div>
+                            {!task.completed && <TaskBadges task={task} />}
+                            
+                            {task.subtasks && task.subtasks.length > 0 && (
+                              <div className="mt-3 pl-1 space-y-2">
+                                {task.subtasks.map(sub => (
+                                  <div key={sub.id} className="flex items-center gap-2 group/sub">
+                                    <CornerDownRight className="w-3 h-3 text-zinc-300 flex-shrink-0" /> 
+                                    <input 
+                                      type="checkbox" checked={sub.completed} onChange={() => toggleSubtaskToday(task.id, sub.id)}
+                                      className="w-3.5 h-3.5 rounded-sm border-zinc-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer flex-shrink-0"
+                                    />
+                                    <span className={`text-xs flex-1 transition-colors ${sub.completed ? 'text-zinc-400 line-through' : 'text-zinc-600'}`}>
+                                      {sub.text}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            
+                          </div>
+                          {task.category && (
+                             <div className="flex-shrink-0 pt-0.5">
+                               {categoriesConfig.map(c => c.id === task.category && (
+                                 <span key={c.id} className="text-xs text-zinc-400 flex items-center" title={c.label}>
+                                   <c.icon className="w-3.5 h-3.5" /> 
+                                 </span>
+                               ))}
+                             </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
                   </div>
                 )}
-              </AnimatePresence>
+              </div>
             </div>
           </div>
 
-          {/* SIDEBAR ANALYSIS */}
-          <div className="lg:col-span-4 space-y-12">
-             
-             {/* Category Performance */}
-             <div className="bg-white p-12 rounded-[3.5rem] border border-zinc-50 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] space-y-10">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[9px] font-black text-zen-navy uppercase tracking-[0.4em]">Resource Analysis</span>
-                  <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3 tracking-tight">
-                    <Palette className="w-6 h-6 text-zen-blue-dark" /> Performance Metrics
-                  </h3>
-                </div>
-
-                <div className="space-y-8">
-                  {categoryStats.length > 0 ? categoryStats.map(cat => (
-                    <div key={cat.id} className="space-y-4">
-                      <div className="flex justify-between items-end px-2">
-                        <span className="text-[11px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-3">
-                          <div className={`w-2.5 h-2.5 rounded-full ${cat.fill}`} />
-                          {cat.label}
-                        </span>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-sm font-black text-zinc-900 tabular-nums">{cat.done}</span>
-                          <span className="text-[10px] font-black text-zinc-300 uppercase">/ {cat.total}</span>
-                        </div>
-                      </div>
-                      <div className="h-3 bg-zinc-50 rounded-full overflow-hidden p-0.5 border border-zinc-100 shadow-inner">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          animate={{ width: `${(cat.done / cat.total) * 100}%` }}
-                          className={`h-full rounded-full ${cat.fill} shadow-lg shadow-black/5`}
-                        />
-                      </div>
-                    </div>
-                  )) : (
-                    <div className="py-16 text-center border-2 border-dashed border-zinc-50 rounded-[2.5rem] bg-zinc-50/30">
-                      <p className="text-[10px] text-zinc-300 font-black uppercase tracking-[0.3em]">Telemetry Unavailable</p>
-                    </div>
-                  )}
-                </div>
-             </div>
-
-             {/* DEEP WORK INTEGRATION */}
-             <div className="bg-gradient-to-br from-zen-navy via-blue-900 to-indigo-950 p-12 rounded-[4rem] shadow-[0_40px_80px_-20px_rgba(30,58,138,0.4)] text-white space-y-10 relative overflow-hidden group">
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:rotate-45 group-hover:scale-125 transition-all duration-1000">
-                  <Timer className="w-48 h-48" />
-                </div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-sky-400/10 rounded-full blur-[60px]" />
-
-                <div className="relative z-10 space-y-8">
-                  <div className="space-y-3">
-                    <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10">
-                      <div className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-                      <span className="text-[9px] font-black uppercase tracking-[0.3em] text-sky-200">System Ready</span>
-                    </div>
-                    <h3 className="text-3xl font-black tracking-tighter leading-tight">
-                      Deep Work <br/> Environment
-                    </h3>
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-5">
+              <h3 className="text-sm font-bold text-zinc-900 mb-4 flex items-center">
+                <Palette className="w-4 h-4 mr-2 text-zinc-500" /> สัดส่วนงานวันนี้
+              </h3>
+              
+              {categoryStats.length === 0 ? (
+                 <p className="text-xs text-zinc-500 text-center py-4">ไม่มีข้อมูลหมวดหมู่</p>
+              ) : (
+                <div className="space-y-4">
+                  <div className="w-full h-2.5 flex rounded-full overflow-hidden bg-zinc-100">
+                    {categoryStats.map(cat => (
+                      <div key={`bar-${cat.id}`} style={{ width: `${cat.percent}%` }} className={`h-full ${cat.fill}`} title={cat.label} /> 
+                    ))}
                   </div>
-
-                  <p className="text-sm font-medium text-sky-100/60 leading-relaxed">
-                    มี {activeWorkspaceTasks.length} ภารกิจที่กำลังรอดำเนินการในโหมดโฟกัสแบบเต็มประสิทธิภาพ
-                  </p>
                   
-                  {activeWorkspaceTasks.length > 0 ? (
-                    <div className="bg-white/10 backdrop-blur-xl p-6 rounded-[2rem] border border-white/10 shadow-2xl group-hover:bg-white/15 transition-colors">
-                      <div className="text-[10px] font-black uppercase tracking-[0.3em] text-sky-400 mb-3">Primary Target</div>
-                      <div className="font-black text-xl truncate tracking-tight mb-2">{activeWorkspaceTasks[0].text}</div>
-                      <div className="flex items-center gap-2 text-[10px] font-black text-sky-200/50 uppercase tracking-widest">
-                        <Timer className="w-3.5 h-3.5" /> High Precision Mode
+                  <div className="space-y-2.5">
+                    {categoryStats.map(cat => (
+                      <div key={`legend-${cat.id}`} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                           <div className={`w-2 h-2 rounded-full ${cat.fill}`} /> 
+                           <span className="text-zinc-600">{cat.label}</span>
+                        </div>
+                        <span className="text-zinc-900 font-medium">{cat.percent}%</span>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="h-32 flex items-center justify-center border border-white/5 rounded-[2rem] bg-white/5 backdrop-blur-sm">
-                      <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">No Active Targets</span>
-                    </div>
-                  )}
-
-                  <Button onClick={() => window.dispatchEvent(new CustomEvent('nav-to-workspace'))} className="w-full bg-white text-zen-navy hover:bg-sky-50 rounded-[2rem] font-black py-6 shadow-2xl transition-all uppercase tracking-[0.3em] text-[10px] border-0 hover:scale-[1.02]">
-                    Enter Workspace <ChevronRight className="w-4 h-4 ml-2" />
-                  </Button>
+                    ))}
+                  </div>
                 </div>
-             </div>
+              )}
+            </div>
+
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 p-5 relative overflow-hidden">
+               <Quote className="w-12 h-12 text-indigo-500/10 absolute -top-2 -left-2" /> 
+               <h3 className="text-sm font-bold text-indigo-900 mb-2 relative z-10 flex items-center">
+                 <Sparkles className="w-4 h-4 mr-1.5 text-indigo-500" /> ข้อคิดประจำวัน
+               </h3>
+               <p className="text-sm text-indigo-800/80 italic relative z-10 leading-relaxed">
+                 ความสำเร็จไม่ได้มาจากการทำสิ่งที่ยิ่งใหญ่เพียงครั้งเดียว แต่มาจากการทำสิ่งเล็กๆ อย่างสม่ำเสมอในทุกๆ วัน
+               </p>
+            </div>
+
+            {/* Reminder Notes Section */}
+            {store.notes.filter(n => n.template === 'reminder').length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-zinc-900 flex items-center px-1">
+                  <Bell className="w-4 h-4 mr-2 text-indigo-500" /> บันทึกเตือนความจำ
+                </h3>
+                <div className="space-y-2">
+                  {store.notes.filter(n => n.template === 'reminder').slice(0, 2).map(note => (
+                    <div key={note.id} className="bg-white p-4 rounded-2xl border border-zinc-100 shadow-sm group hover:border-indigo-200 transition-all">
+                      <div className="text-xs text-zinc-400 font-medium mb-2 uppercase tracking-tighter">
+                        {new Date(note.updatedAt).toLocaleDateString('th-TH')}
+                      </div>
+                      <div className="text-sm text-zinc-600 line-clamp-2 mb-3 prose-sm" dangerouslySetInnerHTML={{ __html: note.content }} />
+                      <button 
+                        onClick={() => {
+                          // Logic to navigate to notes view with filter
+                          // Since we don't have a direct navigation function passed, we rely on App state
+                          // For now, just a placeholder or instruction
+                          window.dispatchEvent(new CustomEvent('nav-to-notes', { detail: { filter: 'reminder' } }));
+                        }}
+                        className="text-[10px] font-black text-indigo-600 flex items-center gap-1 hover:gap-2 transition-all uppercase tracking-widest"
+                      >
+                        ดูเพิ่มเติม <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
       </div>
     </div>
   );
