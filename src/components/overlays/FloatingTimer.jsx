@@ -55,14 +55,14 @@ const FloatingTimer = ({ store, triggerAnimation }) => {
         <div className="w-16 h-1.5 bg-white/30 rounded-full relative z-10" />
       </div>
       
-      <div className="p-8 flex flex-col items-center text-center space-y-6 relative h-full">
+      <div className="p-8 flex flex-col items-center text-center space-y-6 relative h-full min-h-[inherit]">
         {/* Gaming Style Mission Badge */}
-        <div className="px-4 py-1 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-lg z-20">
+        <div className="px-4 py-1 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-lg z-20 shrink-0">
           ACTIVE
         </div>
 
-        <div className="space-y-1">
-          <h4 className="font-black text-zinc-900 dark:text-white leading-tight text-xl tracking-tight uppercase">{activeTask.text}</h4>
+        <div className="space-y-1 shrink-0">
+          <h4 className="font-black text-zinc-900 dark:text-white leading-tight text-xl tracking-tight uppercase line-clamp-2">{activeTask.text}</h4>
           <div className="flex items-center justify-center gap-2">
             <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-md uppercase tracking-widest">
               Reward: +{activeTask.expectedXp} XP
@@ -70,20 +70,20 @@ const FloatingTimer = ({ store, triggerAnimation }) => {
           </div>
         </div>
         
-        <div className="relative group">
+        <div className="relative group flex-1 flex items-center justify-center min-h-0">
           <div className={`absolute inset-0 blur-2xl opacity-20 ${isNegative ? 'bg-red-500' : 'bg-indigo-500'}`} />
-          <div className={`text-6xl font-mono font-black tracking-tighter tabular-nums relative z-10 ${isNegative ? 'text-red-600 animate-pulse' : 'text-zinc-900 dark:text-white drop-shadow-sm'}`}>
+          <div className={`font-mono font-black tracking-tighter tabular-nums relative z-10 transition-all duration-300 ${isNegative ? 'text-red-600 animate-pulse' : 'text-zinc-900 dark:text-white drop-shadow-sm'} text-[min(15vw,6rem)]`}>
             {formatTimer(activeTask.currentSeconds)}
           </div>
         </div>
         
         {isNegative && (
-          <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="flex items-center text-red-600 dark:text-red-400 text-xs font-black bg-red-100 dark:bg-red-900/30 px-4 py-2 rounded-2xl border-2 border-red-200 dark:border-red-800">
-            <AlertCircle className="w-4 h-4 mr-2" /> OVERTIME PENALTY ACTIVE
+          <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="flex items-center text-red-600 dark:text-red-400 text-[10px] font-black bg-red-100 dark:bg-red-900/30 px-3 py-1.5 rounded-2xl border-2 border-red-200 dark:border-red-800 shrink-0">
+            <AlertCircle className="w-3 h-3 mr-2" /> OVERTIME PENALTY
           </motion.div>
         )}
 
-        <Button onClick={handleComplete} className={`w-full font-black text-lg h-16 rounded-[1.5rem] shadow-xl transform transition-all active:scale-95 uppercase tracking-widest ${isNegative ? 'bg-red-600 hover:bg-red-700 shadow-red-200 dark:shadow-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200 dark:shadow-none text-white'}`}>
+        <Button onClick={handleComplete} className={`w-full font-black text-lg h-16 rounded-[1.5rem] shadow-xl transform transition-all active:scale-95 uppercase tracking-widest shrink-0 ${isNegative ? 'bg-red-600 hover:bg-red-700 shadow-red-200 dark:shadow-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200 dark:shadow-none text-white'}`}>
            <CheckCircle2 className="w-6 h-6 mr-3 stroke-[3]" /> Finish Mission
         </Button>
       </div>

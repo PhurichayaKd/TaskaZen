@@ -180,7 +180,7 @@ const HomeView = ({ store }) => {
                       </div>
                       <div className="flex flex-col items-end">
                         <span className={`text-xs font-bold ${task.status === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
-                          {task.status === 'success' ? '+' : ''}{task.xpEarned} XP
+                          {task.status === 'success' ? '+' : ''}{task.xpEarned || 0} XP
                         </span>
                         <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
                           เหลือ {formatTimer(task.currentSeconds)}

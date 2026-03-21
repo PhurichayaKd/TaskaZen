@@ -8,8 +8,11 @@ export const getGreeting = () => {
 };
 
 export const formatTimer = (totalSeconds) => {
-  const isNegative = totalSeconds < 0;
-  const absSeconds = Math.abs(totalSeconds);
+  const seconds = parseInt(totalSeconds);
+  if (isNaN(seconds)) return "0:00";
+  
+  const isNegative = seconds < 0;
+  const absSeconds = Math.abs(seconds);
   const mins = Math.floor(absSeconds / 60);
   const secs = absSeconds % 60;
   return `${isNegative ? '-' : ''}${mins}:${String(secs).padStart(2, '0')}`;

@@ -235,7 +235,7 @@ const WorkspaceView = ({ store }) => {
                       />
                       <div className="flex flex-col">
                         <span className="text-zinc-900 dark:text-white font-black uppercase text-xs tracking-widest">XP Points</span>
-                        <span className="text-zinc-400 dark:text-zinc-500 text-[9px]">Max allowed: {Math.min(100, Math.max(5, Math.floor((mode === 'minutes' ? parseInt(minutesStr) || 0 : 30) * 60 / 60)))} XP</span>
+                        <span className="text-zinc-400 dark:text-zinc-500 text-[9px]">Max allowed: {Math.min(100, Math.max(5, Math.floor((mode === 'minutes' ? parseInt(minutesStr) || 0 : 30) * 60 / 60 + 1)))} XP</span>
                       </div>
                     </div>
                     <p className="text-[9px] text-zinc-500 dark:text-zinc-400 mt-2 font-medium leading-tight">
@@ -275,10 +275,10 @@ const WorkspaceView = ({ store }) => {
                       </div>
                       <h4 className={`text-lg font-black tracking-tight mb-2 ${task.status === 'running' ? 'text-indigo-900 dark:text-indigo-300' : task.status === 'success' ? 'text-emerald-700 dark:text-emerald-400' : task.status === 'failed' ? 'text-red-700 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}`}>{task.text}</h4>
                       <div className={`flex flex-wrap gap-2 text-[9px] font-black uppercase tracking-widest ${task.status === 'running' ? 'text-indigo-500 dark:text-indigo-400' : 'text-zinc-500 dark:text-zinc-500'}`}>
-                        <span className="flex items-center bg-black/5 dark:bg-white/5 px-2 py-1 rounded-lg"><Clock className="w-3 h-3 mr-1" /> {Math.floor(task.totalSeconds / 60)} MINS</span>
-                        {task.status === 'idle' && <span className="flex items-center bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-lg">Target: {task.expectedXp} XP</span>}
-                        {task.status === 'success' && <span className="flex items-center bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-lg">Earned: +{task.xpEarned} XP</span>}
-                        {task.status === 'failed' && <span className="flex items-center bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded-lg">Penalty: {task.xpEarned} XP</span>}
+                        <span className="flex items-center bg-black/5 dark:bg-white/5 px-2 py-1 rounded-lg"><Clock className="w-3 h-3 mr-1" /> {Math.floor((parseInt(task.totalSeconds) || 0) / 60)} MINS</span>
+                        {task.status === 'idle' && <span className="flex items-center bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-lg">Target: {task.expectedXp || 0} XP</span>}
+                        {task.status === 'success' && <span className="flex items-center bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-lg">Earned: +{task.xpEarned || 0} XP</span>}
+                        {task.status === 'failed' && <span className="flex items-center bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded-lg">Penalty: {task.xpEarned || 0} XP</span>}
                       </div>
                     </div>
                     
