@@ -8,14 +8,28 @@ const corsHeaders = {
 }
 
 serve(async (req: Request) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+
   // 1. Handle CORS Preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  // 2. Handle GET for Health Check (helps avoid 405 if called incorrectly)
+  if (req.method === 'GET') {
+    return new Response(
+      JSON.stringify({ status: "ready", message: "Gemini AI Edge Function is active. Please use POST for AI requests." }),
+      { 
+        status: 200, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
   try {
-    // 2. Validate Method
+    // 3. Validate Method
     if (req.method !== 'POST') {
+      console.warn(`Method ${req.method} not allowed`);
       return new Response(
         JSON.stringify({ error: "Method Not Allowed. Please use POST." }),
         { 

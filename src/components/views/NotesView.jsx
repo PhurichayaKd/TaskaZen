@@ -256,6 +256,7 @@ const NotesView = ({ store }) => {
       if (AI_CONFIG.USE_BACKEND) {
         // Option A: Backend Call - Using Supabase SDK for better security and URL handling
         const { data, error: invokeError } = await supabase.functions.invoke('gemini-ai', {
+          method: 'POST', // Explicitly specify POST
           body: { prompt }
         });
 
